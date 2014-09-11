@@ -8,5 +8,16 @@ namespace Common.Interfaces
 {
     public interface IAuctionController
     {
+        /*
+        JoinAuction
+        GetCurrentItem
+        PlaceBid
+        event NewItem
+        event NewMaxBid
+        event First
+        event Second
+        event Third
+        event Sold
+        */
     }
 }
