@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    class Auction
+    public class Auction
     {
+        public bool PlaceBid(AuctionItem auctionItem, decimal amount)
+        {
+            bool success = false;
+
+            return success;
+        }
     }
 }
