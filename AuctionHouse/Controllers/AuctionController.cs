@@ -17,12 +17,15 @@ namespace Controllers
 
         public AuctionController()
         {
-            currentItem = new AuctionItem();
-            currentAuction = new Auction();
             // make list of AuctionItems
             // make new Auction, set as currentAuction
             // subscribe to events from currentAuction
             // make Auctioneer, pass in Auction
+
+            currentItem = new AuctionItem("chair", 100, 10000);
+            Queue<AuctionItem> itemsQueue = new Queue<AuctionItem>();
+            itemsQueue.Enqueue(currentItem);
+            currentAuction = new Auction(itemsQueue);
             // call currentAuction.Start()
         }
 
@@ -42,8 +45,8 @@ namespace Controllers
             SAuctionItem sCurrentItem = new SAuctionItem()
             {
                 Id = this.currentItem.Id,
-                Description = this.currentItem.Description,
-                MaxBid = this.currentItem.MaxBid
+                Description = this.currentItem.ItemName,
+                MaxBid = this.currentItem.Bid
             };
 
             return sCurrentItem;
@@ -60,7 +63,7 @@ namespace Controllers
             bool success = false;
             if (auctionItem.Id == currentItem.Id)
             {
-                success = currentAuction.PlaceBid(currentItem, amount);
+                success = currentAuction.PlaceBid(amount);
             }
 
             return success;
