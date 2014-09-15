@@ -16,23 +16,38 @@ namespace Model
         private Queue<AuctionItem> auctionItems;
 
         private AuctionItem _currentItem;
+        private Auctioneer auctioneer;
 
         public AuctionItem CurrentItem
         {
             get { return _currentItem; }
             set { _currentItem = value; }
         }
-        
 
-        public Auction(Queue<AuctionItem> Items)
+        public Auction()
         {
-            auctionItems = Items;
+            auctionItems = new Queue<AuctionItem>();
         }
 
-        public void Start()
+        public void AddItem(AuctionItem item)
         {
+            auctionItems.Enqueue(item);
+        }
+
+        public void Start(Auctioneer auctioneer)
+        {
+            this.auctioneer = auctioneer;
+            auctioneer.CallThird += sellNextItem;
             _currentItem = auctionItems.Dequeue();
 
+            // should we tell auctioneer explicitly? 
+            NewRound();
+        }
+
+        private void sellNextItem(string message)
+        {
+            // sleep a bit, set next item on auction
+            _currentItem = auctionItems.Dequeue();
             NewRound();
         }
 
@@ -47,5 +62,6 @@ namespace Model
 
             return success;
         }
+
     }
 }

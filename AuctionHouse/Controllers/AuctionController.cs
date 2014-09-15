@@ -22,11 +22,11 @@ namespace Controllers
             // subscribe to events from currentAuction
             // make Auctioneer, pass in Auction
 
-            currentItem = new AuctionItem("chair", 100, 10000);
-            Queue<AuctionItem> itemsQueue = new Queue<AuctionItem>();
-            itemsQueue.Enqueue(currentItem);
-            currentAuction = new Auction(itemsQueue);
-            // call currentAuction.Start()
+            AuctionItem item = new AuctionItem("chair", 100, 10000);
+            currentAuction = new Auction();
+            Auctioneer auctioneer = new Auctioneer(currentAuction);
+            currentAuction.AddItem(item);
+            currentAuction.Start(auctioneer);
         }
 
         /* not needed
