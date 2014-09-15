@@ -8,11 +8,18 @@ using Common.Structs;
 using Common.Interfaces;
 using System.Net.Sockets;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Services
 {
-    public class BidClient //: IAuctionController
+    public class BidClient : IAuctionController
     {
+        public event AuctionEvent NewRound;
+        public event AuctionEvent NewBidAccepted;
+        public event AuctioneerEvent CallFirst;
+        public event AuctioneerEvent CallSecond;
+        public event AuctioneerEvent CallThird;
+
         private string serverIp;
         private int port;
         private StreamReader reader;
@@ -35,11 +42,6 @@ namespace Services
             writer.AutoFlush = true;
         }
 
-        public string Read()
-        {
-            return reader.ReadLine();
-        }
-
         /* Only needed if the application needs a Bidder to keep track of bids
          * Then it returns a Bidder, not an SAuction! Bidder has not been added to Model yet
         public SAuction JoinAuction()
@@ -56,11 +58,14 @@ namespace Services
             // send request
             // receive response
             // deserialize into struct
-            throw new NotImplementedException();
+            writer.WriteLine("get");
+            string itemString = reader.ReadLine();
+            SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
+            return item;
         }
 
 
-        public bool PlaceBid(/*SAuctionItem auctionItem, decimal amount*/ string message)
+        public bool PlaceBid(SAuctionItem auctionItem, decimal amount)
         {
             // beware of handling spaces correctly in the protocol!
             // maybe split on something other than spaces, like " | "
@@ -68,9 +73,7 @@ namespace Services
             // it might be less fragile if combining the args into a single Bid struct
             // and the controller wouldn't even have to know about it!
 
-            // !! temp echo test:
-            writer.WriteLine(message);
-            return true;
+            throw new NotImplementedException();
 
 
         }

@@ -29,19 +29,13 @@ namespace AuctionGUI
             InitializeComponent();
             bidClient = new BidClient("localhost", 13370);
             bidClient.Connect();
-            serverTextBox.Text += bidClient.Read();
-        }
-
-        private void readFromServer()
-        {
-                Dispatcher.BeginInvoke(
-                new ThreadStart(() => serverTextBox.Text += bidClient.Read() + "\n"));
+            serverTextBox.Text += bidClient.GetCurrentItem();
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            bidClient.PlaceBid(clientTextBox.Text);
-            serverTextBox.Text += bidClient.Read();
+            //bidClient.PlaceBid(clientTextBox.Text);
+            //serverTextBox.Text += bidClient.Read();
         }
     }
 }
