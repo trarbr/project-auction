@@ -66,7 +66,7 @@ namespace Services
             writer.AutoFlush = true;
 
             Console.WriteLine("Server started.");
-            Console.Write("IP: " + socket.RemoteEndPoint + " is connected");
+            Console.WriteLine("IP: " + socket.RemoteEndPoint + " is connected");
             writer.WriteLine("you are connected!");
 
             bool BoolRun = true;
@@ -74,23 +74,18 @@ namespace Services
             while (BoolRun)
             {
                 string textFromClient = reader.ReadLine();
-                
+                Console.WriteLine(socket.RemoteEndPoint + ": " + textFromClient);
                 if (textFromClient == "hej")
                 {
-                    Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
-
                     writer.WriteLine("YEEEEEEEAAAAH!!!!");
                 }
                 if (textFromClient == "exit" || textFromClient == "close")
                 {
-                    Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
-
                     writer.WriteLine("Serveren lukkes!");
                     BoolRun = false;
                 }
                 else
                 {
-                    Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
                     writer.WriteLine("Wrong input");
                 }
             }
