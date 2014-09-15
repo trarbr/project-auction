@@ -3,6 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="clientTextBox" HorizontalAlignment="Left" Height="75" Margin="10,10,0,0"
+                     TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
+            <TextBox x:Name="serverTextBox" HorizontalAlignment="Left" Height="75" Margin="10,10,0,0"
+                     TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
+        </StackPanel>
+        <Button x:Name="sendButton" Content="Send" Width="75" Height="25" Click="sendButton_Click"/>
+
+        <!-- Lasses UI
+        <Button Content="Commit Bid" HorizontalAlignment="Left" Margin="10,288,0,0" VerticalAlignment="Top" Width="75" Height="26"/>
+        <Label Content="Kr." HorizontalAlignment="Left" Margin="85,257,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,260,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Close" HorizontalAlignment="Left" Margin="432,288,0,0" VerticalAlignment="Top" Width="75" Height="26"/>
+        <ListBox HorizontalAlignment="Left" Height="211" Margin="10,41,0,0" VerticalAlignment="Top" Width="167"/>
+        <ListBox HorizontalAlignment="Left" Height="211" Margin="344,41,0,0" VerticalAlignment="Top" Width="163"/>
+        <Label Content="Sales" HorizontalAlignment="Left" Margin="71,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="My Bids" HorizontalAlignment="Left" Margin="405,10,0,0" VerticalAlignment="Top"/>
+        -->
     </Grid>
 </Window>

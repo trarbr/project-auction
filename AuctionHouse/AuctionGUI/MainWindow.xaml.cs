@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,23 @@ namespace AuctionGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BidClient bidClient;
+
         public MainWindow()
         {
             InitializeComponent();
+            bidClient = new BidClient("localhost", 13370);
+            bidClient.Connect();
+
+            while (true)
+            {
+                serverTextBox.Text += bidClient.Read();
+            }
+        }
+
+        private void sendButton_Click(object sender, RoutedEventArgs e)
+        {
+            bidClient.PlaceBid(clientTextBox.Text);
         }
     }
 }

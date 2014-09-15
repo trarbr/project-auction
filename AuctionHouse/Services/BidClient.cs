@@ -6,19 +6,37 @@ using System.Threading.Tasks;
 
 using Common.Structs;
 using Common.Interfaces;
+using System.Net.Sockets;
+using System.IO;
 
 namespace Services
 {
-    class BidClient : IAuctionController
+    public class BidClient //: IAuctionController
     {
-        public BidClient()
+        private string serverIp;
+        private int port;
+        private StreamReader reader;
+        private StreamWriter writer;
+
+        public BidClient(string serverIp, int port)
         {
             // give it IP and port of server?
+            this.serverIp = serverIp;
+            this.port = port;
         }
 
         public void Connect()
         {
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
+            TcpClient client = new TcpClient(serverIp, port);
+            NetworkStream stream = client.GetStream();
+            reader = new StreamReader(stream);
+            writer = new StreamWriter(stream);
+        }
+
+        public string Read()
+        {
+            return reader.ReadLine();
         }
 
         /* Only needed if the application needs a Bidder to keep track of bids
@@ -41,7 +59,7 @@ namespace Services
         }
 
 
-        public bool PlaceBid(SAuctionItem auctionItem, decimal amount)
+        public bool PlaceBid(/*SAuctionItem auctionItem, decimal amount*/ string message)
         {
             // beware of handling spaces correctly in the protocol!
             // maybe split on something other than spaces, like " | "
@@ -49,7 +67,11 @@ namespace Services
             // it might be less fragile if combining the args into a single Bid struct
             // and the controller wouldn't even have to know about it!
 
-            throw new NotImplementedException();
+            // !! temp echo test:
+            writer.WriteLine(message);
+            return true;
+
+
         }
 
         // BidClient also needs to provide all the events that IAuctionController specify.
