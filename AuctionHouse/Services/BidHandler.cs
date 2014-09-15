@@ -69,13 +69,12 @@ namespace Services
             Console.Write("IP: " + socket.RemoteEndPoint + " is connected");
             writer.WriteLine("you are connected!");
 
-
-            string textFromClient = reader.ReadLine();
-
             bool BoolRun = true;
 
             while (BoolRun)
             {
+                string textFromClient = reader.ReadLine();
+                
                 if (textFromClient == "hej")
                 {
                     Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
