@@ -71,22 +71,40 @@ namespace Services
 
             bool BoolRun = true;
 
+            string textFromClient;
+            string[] textFromClientArray;
+
             while (BoolRun)
             {
-                string textFromClient = reader.ReadLine();
+                textFromClient = reader.ReadLine();
+                textFromClientArray = textFromClient.Split('|');
+
                 Console.WriteLine(socket.RemoteEndPoint + ": " + textFromClient);
+
                 if (textFromClient == "hej")
                 {
                     writer.WriteLine("YEEEEEEEAAAAH!!!!");
                 }
-                if (textFromClient == "exit" || textFromClient == "close")
+                if (textFromClientArray[0] == "exit" || textFromClientArray[0] == "close")
                 {
                     writer.WriteLine("Serveren lukkes!");
                     BoolRun = false;
                 }
+                if (textFromClientArray[0] == "byd")
+                {
+                    bool success = placeBid(textFromClientArray[1], textFromClientArray[2]);
+
+                    writer.WriteLine(success);
+                }
+                if (textFromClientArray[0] == "get")
+                {
+                    string item = getCurrentItem();
+
+                    writer.WriteLine(item);
+                }
                 else
                 {
-                    writer.WriteLine("Wrong input");
+                    writer.WriteLine("Skriv nu for helvede korrekt!... ALTSÅ!..TSK");
                 }
             }
 
