@@ -65,7 +65,10 @@ namespace Services
             StreamWriter writer = new StreamWriter(stream);
             writer.AutoFlush = true;
 
+            Console.WriteLine("Server started.");
+            Console.Write("IP: " + socket.RemoteEndPoint + " is connected");
             writer.WriteLine("you are connected!");
+
 
             string textFromClient = reader.ReadLine();
 
@@ -75,12 +78,21 @@ namespace Services
             {
                 if (textFromClient == "hej")
                 {
+                    Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
+
                     writer.WriteLine("YEEEEEEEAAAAH!!!!");
                 }
                 if (textFromClient == "exit" || textFromClient == "close")
                 {
+                    Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
+
                     writer.WriteLine("Serveren lukkes!");
                     BoolRun = false;
+                }
+                else
+                {
+                    Console.WriteLine(socket.RemoteEndPoint + "Har sendt: " + textFromClient);
+                    writer.WriteLine("Wrong input");
                 }
             }
 
