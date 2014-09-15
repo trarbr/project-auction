@@ -5,64 +5,69 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
+using Common.Interfaces;
+
 namespace Model
 {
     public class Auctioneer
     {
-        public delegate void TimerSignal();
+        public event AuctioneerEvent CallFirst;
+        public event AuctioneerEvent CallSecond;
+        public event AuctioneerEvent CallThird;
 
-        public event TimerSignal First;
-        public event TimerSignal Second;
-        public event TimerSignal Third;
-
-
+        private Timer timer;
+        private int callNumber;
         private Auction auction;
 
         public Auctioneer(Auction auction)
         {
             this.auction = auction;
+            auction.NewRound += startCountDown;
+            auction.NewBidAccepted += resetTimer;
+
+            timer = new Timer();
+            timer.Elapsed += timerSignal;
         }
 
-        public void StartCountDown()
+        private void startCountDown()
         {
-            Timer timer = new Timer(10000);
-            
-            timer.Elapsed += callFirst;
-            timer.Enabled = true;
+            callNumber = 1;
+            // timer.stop?
+
+            timer.Interval = 10000;
+            timer.Start();
         }
 
-        private void callFirst(object sender, ElapsedEventArgs e)
+        private void resetTimer()
         {
-            Timer _timer = sender as Timer;
-            First();
-
-            _timer.Stop();
-
-            Timer timer = new Timer(5000);
-
-            timer.Elapsed += callSecond;
-            timer.Enabled = true;
+            timer.Stop();
+            startCountDown();
         }
 
-        private void callSecond(object sender, ElapsedEventArgs e)
+        private void timerSignal(object sender, ElapsedEventArgs e)
         {
-            Second();
+            timer.Stop();
 
-            Timer timer = new Timer(5000);
-
-            timer.Elapsed += callThird;
-            timer.Enabled = true;
+            if (callNumber == 1)
+            {
+                CallFirst("First!");
+                callNumber++;
+                timer.Interval = 5000;
+                timer.Start();
+            }
+            else if (callNumber == 2)
+            {
+                CallSecond("Second!");
+                callNumber++;
+                timer.Interval = 3000;
+                timer.Start();
+            }
+            else
+            {
+                // evaluate whether sold or not
+                // might be easier to make the delegate send a string
+                CallThird("Third! Sold or not? I have no idea!");
+            }
         }
-
-        private void callThird(object sender, ElapsedEventArgs e)
-        {
-            Third();
-
-            Timer timer = new Timer(3000);
-
-            throw new NotImplementedException();
-        }
-
-
     }
 }
