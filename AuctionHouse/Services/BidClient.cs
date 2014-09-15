@@ -32,7 +32,7 @@ namespace Services
             this.port = port;
         }
 
-        public void Connect()
+        public string Connect()
         {
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
             TcpClient client = new TcpClient(serverIp, port);
@@ -40,6 +40,7 @@ namespace Services
             reader = new StreamReader(stream);
             writer = new StreamWriter(stream);
             writer.AutoFlush = true;
+            return reader.ReadLine();
         }
 
         /* Only needed if the application needs a Bidder to keep track of bids

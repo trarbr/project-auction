@@ -28,8 +28,8 @@ namespace AuctionGUI
         {
             InitializeComponent();
             bidClient = new BidClient("localhost", 13370);
-            bidClient.Connect();
-            serverTextBox.Text += bidClient.GetCurrentItem();
+            //serverTextBox.Text += bidClient.Connect();
+            //serverTextBox.Text += bidClient.GetCurrentItem();
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e)

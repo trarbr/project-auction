@@ -15,11 +15,13 @@ namespace Services
     class BidHandler
     {
         private IAuctionController auctionController;
+        private Socket socket;
 
         // constructor should also take a Socket, which it is passed from the server
-        public BidHandler(IAuctionController auctionController)
+        public BidHandler(IAuctionController auctionController, Socket socket)
         {
             this.auctionController = auctionController;
+            this.socket = socket;
         
             // subscribe to events on controller
             // when an event is fired on the controller, it has to send a new message to the
@@ -49,13 +51,6 @@ namespace Services
             decimal amount = decimal.Parse(amountAsString);
 
             return auctionController.PlaceBid(item, amount);
-        }
-
-                private Socket socket;
-
-        public BidHandler(Socket socket)
-        {
-            this.socket = socket;
         }
 
         internal void Run()

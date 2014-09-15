@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,10 +14,12 @@ namespace Services
     {
         public IPAddress ip = IPAddress.Parse("127.0.0.1");
         private int port;
+        private AuctionController auctionController;
 
         public AuctionServer(int port)
         {
             this.port = port;
+            this.auctionController = new AuctionController();
         }
 
         public void Run()
@@ -28,7 +31,7 @@ namespace Services
             {
                 Socket socket = listener.AcceptSocket();
 
-                new Thread(new ThreadStart(new BidHandler(socket).Run)).Start();
+                new Thread(new ThreadStart(new BidHandler(auctionController, socket).Run)).Start();
             }
         }
 
