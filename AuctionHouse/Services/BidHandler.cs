@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,6 +49,45 @@ namespace Services
             decimal amount = decimal.Parse(amountAsString);
 
             return auctionController.PlaceBid(item, amount);
+        }
+
+                private Socket socket;
+
+        public BidHandler(Socket socket)
+        {
+            this.socket = socket;
+        }
+
+        internal void Run()
+        {
+            NetworkStream stream = new NetworkStream(socket);
+            StreamReader reader = new StreamReader(stream);
+            StreamWriter writer = new StreamWriter(stream);
+            writer.AutoFlush = true;
+
+            writer.WriteLine("you are connected!");
+
+            string textFromClient = reader.ReadLine();
+
+            bool BoolRun = true;
+
+            while (BoolRun)
+            {
+                if (textFromClient == "hej")
+                {
+                    writer.WriteLine("YEEEEEEEAAAAH!!!!");
+                }
+                if (textFromClient == "exit" || textFromClient == "close")
+                {
+                    writer.WriteLine("Serveren lukkes!");
+                    BoolRun = false;
+                }
+            }
+
+            writer.Close();
+            reader.Close();
+            stream.Close();
+            socket.Close();
         }
     }
 }
