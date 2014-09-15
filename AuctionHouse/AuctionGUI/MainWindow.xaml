@@ -2,23 +2,30 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <!--<StackPanel Orientation="Horizontal">
-            <TextBox x:Name="clientTextBox" HorizontalAlignment="Left" Height="75" Margin="10,10,0,0"
-                     TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
-            <TextBox x:Name="serverTextBox" HorizontalAlignment="Left" Height="75" Margin="10,10,0,0"
-                     TextWrapping="Wrap" VerticalAlignment="Top" Width="250"/>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Label Content="Auction item:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="Current bid:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="Your latest bid:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="Place bid:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,25,0,0"/>
+            <Label Content="Messages:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,50,0,0"/>
         </StackPanel>
-        <Button x:Name="sendButton" Content="Send" Width="75" Height="25" Click="sendButton_Click"/>-->
-
-
-        <Button Content="Commit Bid" HorizontalAlignment="Left" Margin="10,288,0,0" VerticalAlignment="Top" Width="75" Height="26"/>
-        <Label Content="Kr." HorizontalAlignment="Left" Margin="85,257,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,260,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Close" HorizontalAlignment="Left" Margin="432,288,0,0" VerticalAlignment="Top" Width="75" Height="26"/>
-        <ListBox HorizontalAlignment="Left" Height="211" Margin="10,41,0,0" VerticalAlignment="Top" Width="167"/>
-        <ListBox HorizontalAlignment="Left" Height="211" Margin="344,41,0,0" VerticalAlignment="Top" Width="163"/>
-        <Label Content="Sales" HorizontalAlignment="Left" Margin="71,10,0,0" VerticalAlignment="Top"/>
-        <Label Content="My Bids" HorizontalAlignment="Left" Margin="405,10,0,0" VerticalAlignment="Top"/>
+        <StackPanel Grid.Column="1">
+            <Label Content="Nokia 3210 mobiltelefon" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="570 kr." HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="570 kr. (Accepted)" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Height="26" TextWrapping="Wrap" Text="" Margin="0,25,0,0" Width="150" HorizontalAlignment="Left"/>
+            <Button Content="Bid now" Width="100" HorizontalAlignment="Left" Margin="50,3,0,0"/>
+            <Label Content="Timer messages goes here.." VerticalAlignment="Top" Margin="0,25,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal">
+            <Label Content="Timeleft:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="35" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
     </Grid>
 </Window>
