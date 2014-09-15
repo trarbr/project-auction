@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
+using Common.Interfaces;
+
 namespace Model
 {
     public class Auctioneer
     {
-        public delegate void TimerSignal(string message);
-
-        public event TimerSignal CallFirst;
-        public event TimerSignal CallSecond;
-        public event TimerSignal CallThird;
+        public event AuctioneerEvent CallFirst;
+        public event AuctioneerEvent CallSecond;
+        public event AuctioneerEvent CallThird;
 
         private Timer timer;
         private int callNumber;

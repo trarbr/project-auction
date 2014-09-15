@@ -12,7 +12,12 @@ namespace Controllers
 {
     public class AuctionController : IAuctionController
     {
-        private AuctionItem currentItem;
+        public event AuctionEvent NewRound;
+        public event AuctionEvent NewBidAccepted;
+        public event AuctioneerEvent CallFirst;
+        public event AuctioneerEvent CallSecond;
+        public event AuctioneerEvent CallThird;
+
         private Auction currentAuction;
 
         public AuctionController()
@@ -25,6 +30,15 @@ namespace Controllers
             AuctionItem item = new AuctionItem("chair", 100, 10000);
             currentAuction = new Auction();
             Auctioneer auctioneer = new Auctioneer(currentAuction);
+
+            // resend the events
+            currentAuction.NewRound += NewRound;
+            currentAuction.NewBidAccepted += NewBidAccepted;
+
+            auctioneer.CallFirst += CallFirst;
+            auctioneer.CallSecond += CallSecond;
+            auctioneer.CallThird += CallThird;
+
             currentAuction.AddItem(item);
             currentAuction.Start(auctioneer);
         }
@@ -39,14 +53,15 @@ namespace Controllers
 
         public SAuctionItem GetCurrentItem()
         {
+            AuctionItem currentItem = currentAuction.CurrentItem;
             // what if the auction is sold in between the individual locks expiring..?
             // this is going to be invalid (stale) data
             // to avoid that, lock on the auction...
             SAuctionItem sCurrentItem = new SAuctionItem()
             {
-                Id = this.currentItem.Id,
-                Description = this.currentItem.ItemName,
-                MaxBid = this.currentItem.Bid
+                Id = currentItem.Id,
+                Description = currentItem.ItemName,
+                MaxBid = currentItem.Bid
             };
 
             return sCurrentItem;
@@ -61,7 +76,7 @@ namespace Controllers
             // currentItem), Auction needs a finder method which returns the currentItem on given
             // Id)
             bool success = false;
-            if (auctionItem.Id == currentItem.Id)
+            if (auctionItem.Id == currentAuction.CurrentItem.Id)
             {
                 success = currentAuction.PlaceBid(amount);
             }

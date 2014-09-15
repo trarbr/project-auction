@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Common.Interfaces;
+
 namespace Model
 {
     public class Auction
     {
-        public delegate void BiddingDel();
-
-        public event BiddingDel NewRound;
-        public event BiddingDel NewBidAccepted;
+        public event AuctionEvent NewRound;
+        public event AuctionEvent NewBidAccepted;
 
         private Queue<AuctionItem> auctionItems;
 
