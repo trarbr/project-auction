@@ -32,6 +32,7 @@ namespace Services
             NetworkStream stream = client.GetStream();
             reader = new StreamReader(stream);
             writer = new StreamWriter(stream);
+            writer.AutoFlush = true;
         }
 
         public string Read()

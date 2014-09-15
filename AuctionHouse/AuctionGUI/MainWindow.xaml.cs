@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,16 +29,19 @@ namespace AuctionGUI
             InitializeComponent();
             bidClient = new BidClient("localhost", 13370);
             bidClient.Connect();
+            serverTextBox.Text += bidClient.Read();
+        }
 
-            while (true)
-            {
-                serverTextBox.Text += bidClient.Read();
-            }
+        private void readFromServer()
+        {
+                Dispatcher.BeginInvoke(
+                new ThreadStart(() => serverTextBox.Text += bidClient.Read() + "\n"));
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
             bidClient.PlaceBid(clientTextBox.Text);
+            serverTextBox.Text += bidClient.Read();
         }
     }
 }
