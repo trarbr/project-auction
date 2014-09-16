@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Common.Interfaces;
@@ -18,10 +19,21 @@ namespace Model
         private AuctionItem _currentItem;
         private Auctioneer auctioneer;
 
+        private object objlock = new object();
+
         public AuctionItem CurrentItem
         {
-            get { return _currentItem; }
-            set { _currentItem = value; }
+            
+            get 
+            {
+                lock (objlock){ return _currentItem; }
+            }
+            set 
+            {
+                lock (objlock){ _currentItem = value; }
+            }
+            
+            
         }
 
         public Auction()
@@ -46,21 +58,45 @@ namespace Model
 
         private void sellNextItem(string message)
         {
+            Thread.Sleep(1000);
             // sleep a bit, set next item on auction
-            _currentItem = auctionItems.Dequeue();
-            NewRound();
+            lock (objlock)
+            {
+                if (auctionItems.Count != 0)
+                {
+                    _currentItem = auctionItems.Dequeue();
+                    NewRound();
+                }
+                
+            }
+            //problems having signale calls inside a lock?
+            //NewRound();
         }
 
-        public bool PlaceBid(decimal bid)
+        public bool PlaceBid(int id, decimal bid)
         {
-            bool success = CurrentItem.PlaceBid(bid);
-
-            if (success == true)
+            lock (objlock)
             {
-                NewBidAccepted();
+                bool success = false;
+                if (_currentItem.Id == id)
+                {
+                    success = _currentItem.PlaceBid(bid);
+                    if (success)
+                    {
+                        NewBidAccepted();
+                    }
+                }
+                return success;
             }
+            
+        }
 
-            return success;
+        public bool IsCurrentItemSold()
+        {
+            lock (objlock)
+            {
+                return _currentItem.IsSold();
+            }
         }
 
     }
