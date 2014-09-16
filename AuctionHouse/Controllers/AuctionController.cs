@@ -52,7 +52,7 @@ namespace Controllers
             auctioneer.CallSecond += CallSecond;
             auctioneer.CallThird += CallThird;
 
-            currentAuction.AddItem(item);
+            currentAuction.AddItem(items);
             currentAuction.Start(auctioneer);
         }
 
