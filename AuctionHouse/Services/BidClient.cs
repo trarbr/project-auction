@@ -51,10 +51,17 @@ namespace Services
 
         private void readForever()
         {
+            string message;
+
             Thread.Sleep(10000);
             while (true)
             {
-                string message = reader.ReadLine();
+                lock (lockObj)
+                {
+                    Monitor.Wait(lockObj);
+                    message = reader.ReadLine();    
+                }
+                
                 if (message.Contains("NewRound"))
                 {
                     NewRound();
@@ -75,6 +82,7 @@ namespace Services
                 {
                     CallThird(message);
                 }
+
             }
         }
 
@@ -112,8 +120,20 @@ namespace Services
             // it might be less fragile if combining the args into a single Bid struct
             // and the controller wouldn't even have to know about it!
             string itemAsString = JsonConvert.SerializeObject(auctionItem);
-            writer.WriteLine("bid|" + itemAsString + "|" + amount);
-            return true; // <-- fix!
+
+            lock (lockObj)
+            {
+
+                writer.WriteLine("bid|" + itemAsString + "|" + amount);
+
+                bool success;
+
+                bool.TryParse(reader.ReadLine(), out success);
+
+                Monitor.PulseAll(lockObj);
+
+                return success;
+            }
         }
 
         // BidClient also needs to provide all the events that IAuctionController specify.

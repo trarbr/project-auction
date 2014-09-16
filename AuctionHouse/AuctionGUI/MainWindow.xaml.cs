@@ -88,6 +88,10 @@ namespace AuctionGUI
                 {
                     yourBidLabel.Content = amount + " (Accepted)";
                 }
+                else
+                {
+                    yourBidLabel.Content = "lort";
+                }
             }
             catch (Exception ex)
             {
