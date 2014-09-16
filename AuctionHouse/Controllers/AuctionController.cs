@@ -18,6 +18,7 @@ namespace Controllers
         public event AuctioneerEvent CallSecond;
         public event AuctioneerEvent CallThird;
 
+        private object lockage = new object();
         private Auction currentAuction;
 
         public AuctionController()
@@ -53,18 +54,23 @@ namespace Controllers
 
         public SAuctionItem GetCurrentItem()
         {
-            AuctionItem currentItem = currentAuction.CurrentItem;
-            // what if the auction is sold in between the individual locks expiring..?
-            // this is going to be invalid (stale) data
-            // to avoid that, lock on the auction...
-            SAuctionItem sCurrentItem = new SAuctionItem()
+            lock (lockage)
             {
-                Id = currentItem.Id,
-                Description = currentItem.ItemName,
-                MaxBid = currentItem.Bid
-            };
+                AuctionItem currentItem = currentAuction.CurrentItem;
+                // what if the auction is sold in between the individual locks expiring..?
+                // this is going to be invalid (stale) data
+                // to avoid that, lock on the auction...
+                SAuctionItem sCurrentItem = new SAuctionItem()
+                {
+                    Id = currentItem.Id,
+                    Description = currentItem.ItemName,
+                    MaxBid = currentItem.Bid
+                };
+                return sCurrentItem;
+            }
+            
 
-            return sCurrentItem;
+            
         }
 
         public bool PlaceBid(SAuctionItem auctionItem, decimal amount)
@@ -75,13 +81,7 @@ namespace Controllers
             // if you want to pass it on to currentAuction without checking Id (so you don't need 
             // currentItem), Auction needs a finder method which returns the currentItem on given
             // Id)
-            bool success = false;
-            if (auctionItem.Id == currentAuction.CurrentItem.Id)
-            {
-                success = currentAuction.PlaceBid(amount);
-            }
-
-            return success;
+            return currentAuction.PlaceBid(auctionItem.Id, amount);
         }
 
         public void callFirst(string message)

@@ -66,7 +66,15 @@ namespace Model
             {
                 // evaluate whether sold or not
                 // might be easier to make the delegate send a string
-                CallThird("Third! Sold or not? I have no idea!");
+                bool IsSold = auction.IsCurrentItemSold();
+                if (IsSold)
+                {
+                    CallThird("Item sold to highest bidder");
+                }
+                else
+                {
+                    CallThird("Item not sold");
+                }
             }
         }
     }

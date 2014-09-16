@@ -15,18 +15,7 @@ namespace Model
         private decimal _bid;
         private bool _sold;
         private decimal _minimumSoldPrice;
-
-        public decimal MinimunSoldPrice
-        {
-            get { return _minimumSoldPrice;}
-            set { _minimumSoldPrice = value;}
-        }
-
-        public bool Sold
-        {
-            get { return _sold; }
-            set { _sold = value; }
-        }
+        
         
         public string ItemName
         {
@@ -44,33 +33,31 @@ namespace Model
         {
             ItemName = itemName;
             Bid = bid;
-            MinimunSoldPrice = minimumSoldPrice;
+           _minimumSoldPrice = minimumSoldPrice;
         }
 
         public bool PlaceBid(decimal newBid)
         {
-            if (newBid > Bid && Sold == false)
+            if (newBid > Bid && _sold == false)
             {
                 Bid = newBid;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+           return false;
+            
         }
 
         public bool IsSold()
         {
-            if (Bid > MinimunSoldPrice)
+            if (Bid > _minimumSoldPrice)
             {
-                Sold = true;
+                _sold = true;
             }
             else
             {
-                Sold = false;
+                _sold = false;
             }
-            return Sold;
+            return _sold;
         }
     }
 }
