@@ -17,6 +17,9 @@ namespace Services
         private IAuctionController auctionController;
         private Socket socket;
 
+        private StreamReader reader;
+        private StreamWriter writer;
+
         // constructor should also take a Socket, which it is passed from the server
         public BidHandler(IAuctionController auctionController, Socket socket)
         {
@@ -26,6 +29,10 @@ namespace Services
             // subscribe to events on controller
             // when an event is fired on the controller, it has to send a new message to the
             // client.
+
+            auctionController.CallFirst += First;
+            auctionController.CallSecond += Second;
+            auctionController.CallThird += Third;
 
             // setup NetworkStream, StreamReader and StreamWriter
         }
@@ -56,8 +63,8 @@ namespace Services
         internal void Run()
         {
             NetworkStream stream = new NetworkStream(socket);
-            StreamReader reader = new StreamReader(stream);
-            StreamWriter writer = new StreamWriter(stream);
+            reader = new StreamReader(stream);
+            writer = new StreamWriter(stream);
             writer.AutoFlush = true;
 
             Console.WriteLine("Server started.");
@@ -107,6 +114,26 @@ namespace Services
             reader.Close();
             stream.Close();
             socket.Close();
+        }
+
+        public void First(string message)
+        {
+            writer.WriteLine(message);
+        }
+
+        private void Third(string message)
+        {
+            writer.WriteLine(message);
+        }
+
+        private void Second(string message)
+        {
+            writer.WriteLine(message);
+        }
+
+        private void reset()
+        {
+            
         }
     }
 }
