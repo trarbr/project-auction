@@ -69,11 +69,11 @@ namespace Model
                 bool IsSold = auction.IsCurrentItemSold();
                 if (IsSold)
                 {
-                    CallThird("Item sold to highest bidder");
+                    CallThird("Third! \n Item sold to highest bidder");
                 }
                 else
                 {
-                    CallThird("Item not sold");
+                    CallThird("Third! \n Item not sold");
                 }
             }
         }
