@@ -95,7 +95,7 @@ namespace Model
         {
             lock (objlock)
             {
-                return _currentItem.IsSold();
+                return _currentItem.EvaluateIfSold();
             }
         }
 
