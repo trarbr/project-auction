@@ -52,8 +52,13 @@
   <ItemGroup>
     <Compile Include="AuctionItemTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AuctioneerTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{32b553fb-08c0-4cc9-a8e2-4e2bb083ca75}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{f48412f4-59cd-4e59-9cb0-6c28071fc6e1}</Project>
       <Name>Model</Name>
