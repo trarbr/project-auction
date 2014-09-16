@@ -9,6 +9,16 @@ namespace UnitTests
     public class AuctionItemTest
     {
         [TestMethod]
+        public void TestConstructor()
+        {
+            AuctionItem item = getAuctionItem();
+
+            Assert.AreEqual(1, item.Id);
+            Assert.AreEqual("Chair", item.ItemName);
+            Assert.AreEqual(100, item.Bid);
+        }
+
+        [TestMethod]
         public void TestPlaceBidHigher()
         {
             AuctionItem item = getAuctionItem();
@@ -54,8 +64,7 @@ namespace UnitTests
         public void TestEvaluateIfSoldFalse()
         {
             AuctionItem item = getAuctionItem();
-
-            item.PlaceBid(100);
+            item.PlaceBid(200);
 
             bool isSold = item.EvaluateIfSold();
 
@@ -66,9 +75,7 @@ namespace UnitTests
         public void TestPlaceBidWhenSold()
         {
             AuctionItem item = getAuctionItem();
-
             item.PlaceBid(1100);
-
             item.EvaluateIfSold();
 
             bool success = item.PlaceBid(1200);
@@ -79,9 +86,7 @@ namespace UnitTests
 
         private AuctionItem getAuctionItem()
         {
-            return new AuctionItem("Chair", 100, 1000);
+            return new AuctionItem(1, "Chair", 100, 1000);
         }
-
-
     }
 }

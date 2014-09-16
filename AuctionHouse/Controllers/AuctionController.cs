@@ -28,7 +28,7 @@ namespace Controllers
             // subscribe to events from currentAuction
             // make Auctioneer, pass in Auction
 
-            AuctionItem item = new AuctionItem("chair", 100, 10000);
+            AuctionItem item = new AuctionItem(1, "chair", 100, 10000);
             currentAuction = new Auction();
             Auctioneer auctioneer = new Auctioneer(currentAuction);
 

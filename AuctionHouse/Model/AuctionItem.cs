@@ -46,11 +46,12 @@ namespace Model
         private decimal minimumSoldPrice;
         private object auctionItemLock;
         
-        public AuctionItem(string itemName, decimal minimumBid, decimal minimumSoldPrice)
+        public AuctionItem(int id, string itemName, decimal minimumBid, decimal minimumSoldPrice)
         {
             // No race conditions in the constructor, as the item has not yet been added to the 
             // Auction, so no use of lock.
             auctionItemLock = new object();
+            _id = id;
             _itemName = itemName;
             _bid = minimumBid;
             this.minimumSoldPrice = minimumSoldPrice;
