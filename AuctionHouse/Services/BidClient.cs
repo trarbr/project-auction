@@ -9,6 +9,7 @@ using Common.Interfaces;
 using System.Net.Sockets;
 using System.IO;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Services
 {
@@ -40,7 +41,23 @@ namespace Services
             reader = new StreamReader(stream);
             writer = new StreamWriter(stream);
             writer.AutoFlush = true;
-            return reader.ReadLine();
+            string welcomeMessage = reader.ReadLine();
+            Thread readForeverThread = new Thread(new ThreadStart(readForever));
+            readForeverThread.Start();
+            return welcomeMessage;
+        }
+
+        private void readForever()
+        {
+            while (true)
+            {
+                string message = reader.ReadLine();
+
+                if (message == "NewRound")
+                {
+                    NewRound();
+                }
+            }
         }
 
         /* Only needed if the application needs a Bidder to keep track of bids

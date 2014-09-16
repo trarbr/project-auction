@@ -35,9 +35,9 @@ namespace Controllers
             currentAuction.NewRound += NewRound;
             currentAuction.NewBidAccepted += NewBidAccepted;
 
-            auctioneer.CallFirst += CallFirst;
-            auctioneer.CallSecond += CallSecond;
-            auctioneer.CallThird += CallThird;
+            auctioneer.CallFirst += callFirst;
+            auctioneer.CallSecond += callSecond;
+            auctioneer.CallThird += callThird;
 
             currentAuction.AddItem(item);
             currentAuction.Start(auctioneer);
@@ -82,6 +82,21 @@ namespace Controllers
             }
 
             return success;
+        }
+
+        public void callFirst(string message)
+        {
+            CallFirst(message);
+        }
+
+        public void callSecond(string message)
+        {
+            CallSecond(message);
+        }
+
+        public void callThird(string message)
+        {
+            CallThird(message);
         }
     }
 }

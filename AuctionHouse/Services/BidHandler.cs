@@ -30,6 +30,8 @@ namespace Services
             // when an event is fired on the controller, it has to send a new message to the
             // client.
 
+            auctionController.NewRound += NewRound;
+            auctionController.NewBidAccepted += NewBidAccepted;
             auctionController.CallFirst += First;
             auctionController.CallSecond += Second;
             auctionController.CallThird += Third;
@@ -131,9 +133,14 @@ namespace Services
             writer.WriteLine(message);
         }
 
-        private void reset()
+        private void NewBidAccepted()
         {
-            
+            writer.WriteLine("NewBidAccepted");
+        }
+
+        private void NewRound()
+        {
+            writer.WriteLine("NewRound");
         }
     }
 }

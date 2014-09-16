@@ -30,7 +30,9 @@ namespace AuctionGUI
         {
             InitializeComponent();
             bidClient = new BidClient("localhost", 13370);
+            bidClient.NewRound += newRound;
             logLabel.Content += bidClient.Connect();
+            getCurrentItem();
         }
 
         public void getCurrentItem()
@@ -64,6 +66,12 @@ namespace AuctionGUI
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private void newRound()
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => logLabel.Content += "New round event triggered!! \n"));
         }
     }
 }
