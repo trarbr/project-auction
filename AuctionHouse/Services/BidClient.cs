@@ -26,6 +26,7 @@ namespace Services
         private StreamReader reader;
         private StreamWriter writer;
         private object lockObj;
+        private bool readForeverBool;
 
         public BidClient(string serverIp, int port)
         {
@@ -54,11 +55,10 @@ namespace Services
             string message;
 
             Thread.Sleep(10000);
-            while (true)
+            while (readForeverBool)
             {
                 lock (lockObj)
                 {
-                    Monitor.Wait(lockObj);
                     message = reader.ReadLine();    
                 }
                 
@@ -107,6 +107,9 @@ namespace Services
                 writer.WriteLine("get");
                 string itemString = reader.ReadLine();
                 SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
+
+                readForeverBool = false;
+                Thread readForeverThread = new Thread(new ThreadStart(readForever));
                 return item;
             }
         }
@@ -127,10 +130,10 @@ namespace Services
                 writer.WriteLine("bid|" + itemAsString + "|" + amount);
 
                 bool success;
-
                 bool.TryParse(reader.ReadLine(), out success);
 
-                Monitor.PulseAll(lockObj);
+                readForeverBool = false;
+                Thread readForeverThread = new Thread(new ThreadStart(readForever));
 
                 return success;
             }
