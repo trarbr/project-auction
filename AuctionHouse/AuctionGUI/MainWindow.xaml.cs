@@ -31,11 +31,5 @@ namespace AuctionGUI
             //serverTextBox.Text += bidClient.Connect();
             //serverTextBox.Text += bidClient.GetCurrentItem();
         }
-
-        private void sendButton_Click(object sender, RoutedEventArgs e)
-        {
-            //bidClient.PlaceBid(clientTextBox.Text);
-            //serverTextBox.Text += bidClient.Read();
-        }
     }
 }
