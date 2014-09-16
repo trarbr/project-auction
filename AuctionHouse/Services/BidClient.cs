@@ -51,17 +51,29 @@ namespace Services
 
         private void readForever()
         {
+            Thread.Sleep(10000);
             while (true)
             {
                 string message = reader.ReadLine();
-
-                if (message == "NewRound")
+                if (message.Contains("NewRound"))
                 {
                     NewRound();
+                }
+                else if (message.Contains("NewBidAccepted"))
+                {
+                    NewBidAccepted();
                 }
                 else if (message.Contains("First"))
                 {
                     CallFirst(message);
+                }
+                else if (message.Contains("Second"))
+                {
+                    CallSecond(message);
+                }
+                else if (message.Contains("Item"))
+                {
+                    CallThird(message);
                 }
             }
         }
@@ -99,10 +111,9 @@ namespace Services
             // anyway, it's going to be pretty fragile
             // it might be less fragile if combining the args into a single Bid struct
             // and the controller wouldn't even have to know about it!
-
-            throw new NotImplementedException();
-
-
+            string itemAsString = JsonConvert.SerializeObject(auctionItem);
+            writer.WriteLine("bid|" + itemAsString + "|" + amount);
+            return true; // <-- fix!
         }
 
         // BidClient also needs to provide all the events that IAuctionController specify.

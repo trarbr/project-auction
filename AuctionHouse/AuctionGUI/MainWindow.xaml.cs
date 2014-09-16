@@ -31,15 +31,36 @@ namespace AuctionGUI
             InitializeComponent();
             bidClient = new BidClient("localhost", 13370);
             bidClient.NewRound += newRound;
+            bidClient.NewBidAccepted += newBidAccepted;
             bidClient.CallFirst += callFirst;
+            bidClient.CallSecond += callSecond;
+            bidClient.CallThird += callThird;
             logLabel.Content += bidClient.Connect();
             getCurrentItem();
+        }
+
+        private void newBidAccepted()
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => logLabel.Content += "New bid event accepted!! \n"));
+        }
+
+        private void callThird(string message)
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => logLabel.Content += message + "\n"));
+        }
+
+        private void callSecond(string message)
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => logLabel.Content += message + "\n"));
         }
 
         private void callFirst(string message)
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += "Første!! \n"));
+                new ThreadStart(() => logLabel.Content += message + "\n"));
         }
 
         public void getCurrentItem()

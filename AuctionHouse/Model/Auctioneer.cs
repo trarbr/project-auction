@@ -34,7 +34,7 @@ namespace Model
             callNumber = 1;
             // timer.stop?
 
-            timer.Interval = 50000;
+            timer.Interval = 30000;
             timer.Start();
         }
 
