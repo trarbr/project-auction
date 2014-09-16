@@ -13,19 +13,19 @@
             <Label Content="Current bid:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="Your latest bid:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="Place bid:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,25,0,0"/>
-            <Label Content="Messages:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,50,0,0"/>
+            <Label Content="Log:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,50,0,0"/>
         </StackPanel>
         <StackPanel Grid.Column="1">
-            <Label Content="Nokia 3210 mobiltelefon" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Content="570 kr." HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Content="570 kr. (Accepted)" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <TextBox Height="26" TextWrapping="Wrap" Text="" Margin="0,25,0,0" Width="150" HorizontalAlignment="Left"/>
-            <Button x:Name="bidButton" Content="Bid now" Width="100" HorizontalAlignment="Left" Margin="50,3,0,0"/>
-            <Label Content="Timer messages goes here.." VerticalAlignment="Top" Margin="0,25,0,0"/>
+            <Label x:Name="itemLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label x:Name="currentBidLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label x:Name="yourBidLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox x:Name="placeBidTextBox" Height="26" TextWrapping="Wrap" Text="" Margin="0,25,0,0" Width="150" HorizontalAlignment="Left"/>
+            <Button x:Name="bidButton" Content="Bid now" Width="100" HorizontalAlignment="Left" Margin="50,3,0,0" Click="bidButton_Click"/>
+            <Label x:Name="logLabel" Content="" VerticalAlignment="Top" Margin="0,25,0,0"/>
         </StackPanel>
         <StackPanel Grid.Column="2" Orientation="Horizontal">
             <Label Content="Timeleft:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Label Content="35" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label x:Name="timeleftLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </StackPanel>
     </Grid>
 </Window>
