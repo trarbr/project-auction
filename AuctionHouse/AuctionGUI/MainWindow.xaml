@@ -20,7 +20,7 @@
             <Label Content="570 kr." HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="570 kr. (Accepted)" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <TextBox Height="26" TextWrapping="Wrap" Text="" Margin="0,25,0,0" Width="150" HorizontalAlignment="Left"/>
-            <Button Content="Bid now" Width="100" HorizontalAlignment="Left" Margin="50,3,0,0"/>
+            <Button x:Name="bidButton" Content="Bid now" Width="100" HorizontalAlignment="Left" Margin="50,3,0,0"/>
             <Label Content="Timer messages goes here.." VerticalAlignment="Top" Margin="0,25,0,0"/>
         </StackPanel>
         <StackPanel Grid.Column="2" Orientation="Horizontal">
