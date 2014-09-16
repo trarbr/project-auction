@@ -23,12 +23,24 @@ namespace Controllers
 
         public AuctionController()
         {
+            List<AuctionItem> items = new List<AuctionItem>();
             // make list of AuctionItems
             // make new Auction, set as currentAuction
             // subscribe to events from currentAuction
             // make Auctioneer, pass in Auction
+            AuctionItem item1 = new AuctionItem("chair", 100, 10000);
+            items.Add(item1);
+            AuctionItem item2 = new AuctionItem("car", 100, 10000);
+            items.Add(item2);
+            AuctionItem item3 = new AuctionItem("couch", 100, 10000);
+            items.Add(item3);
+            
+            foreach (AuctionItem item in items)
+            {
+                currentAuction.AddItem(item);
+            }
 
-            AuctionItem item = new AuctionItem("chair", 100, 10000);
+            
             currentAuction = new Auction();
             Auctioneer auctioneer = new Auctioneer(currentAuction);
 
