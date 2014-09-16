@@ -31,22 +31,29 @@ namespace AuctionGUI
             InitializeComponent();
             bidClient = new BidClient("localhost", 13370);
             bidClient.NewRound += newRound;
+            bidClient.CallFirst += callFirst;
             logLabel.Content += bidClient.Connect();
             getCurrentItem();
         }
 
+        private void callFirst(string message)
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => logLabel.Content += "Første!! \n"));
+        }
+
         public void getCurrentItem()
         {
-            try
-            {
+            //try
+            //{
                 auctionItem = bidClient.GetCurrentItem();
                 itemLabel.Content = auctionItem.Description;
                 currentBidLabel.Content = auctionItem.MaxBid;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
         }
 
         private void bidButton_Click(object sender, RoutedEventArgs e)

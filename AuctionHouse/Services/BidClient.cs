@@ -25,12 +25,14 @@ namespace Services
         private int port;
         private StreamReader reader;
         private StreamWriter writer;
+        private object lockObj;
 
         public BidClient(string serverIp, int port)
         {
             // give it IP and port of server?
             this.serverIp = serverIp;
             this.port = port;
+            this.lockObj = new object();
         }
 
         public string Connect()
@@ -57,6 +59,10 @@ namespace Services
                 {
                     NewRound();
                 }
+                else if (message.Contains("First"))
+                {
+                    CallFirst(message);
+                }
             }
         }
 
@@ -76,10 +82,13 @@ namespace Services
             // send request
             // receive response
             // deserialize into struct
-            writer.WriteLine("get");
-            string itemString = reader.ReadLine();
-            SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
-            return item;
+            lock (lockObj)
+            {
+                writer.WriteLine("get");
+                string itemString = reader.ReadLine();
+                SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
+                return item;
+            }
         }
 
 
