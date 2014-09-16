@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,18 @@ namespace Services
         {
             this.auctionController = auctionController;
             this.socket = socket;
+
+
+
+            //Socket eventSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //EndPoint eventPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16001);
+            //eventSocket.Connect(eventPoint);
+
+
+            //Console.WriteLine(eventSocket.LocalEndPoint);
+
+           
+            
         
             // subscribe to events on controller
             // when an event is fired on the controller, it has to send a new message to the
@@ -35,7 +48,7 @@ namespace Services
             auctionController.CallFirst += First;
             auctionController.CallSecond += Second;
             auctionController.CallThird += Third;
-
+            TcpClient eventClient = new TcpClient("127.0.0.1", 16001);
             // setup NetworkStream, StreamReader and StreamWriter
         }
 

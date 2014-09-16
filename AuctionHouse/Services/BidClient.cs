@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,7 @@ namespace Services
         private StreamWriter writer;
         private object lockObj;
         private bool readForeverBool;
+        private Socket eventSocket;
 
         public BidClient(string serverIp, int port)
         {
@@ -34,10 +36,17 @@ namespace Services
             this.serverIp = serverIp;
             this.port = port;
             this.lockObj = new object();
+
+
+
+            //eventSocket = listener.AcceptSocket();
+            //EndPoint eventPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16001);
+            //eventSocket.Bind(eventPoint);
         }
 
         public string Connect()
         {
+            new Thread(startListening).Start();
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
             TcpClient client = new TcpClient(serverIp, port);
             NetworkStream stream = client.GetStream();
@@ -45,9 +54,19 @@ namespace Services
             writer = new StreamWriter(stream);
             writer.AutoFlush = true;
             string welcomeMessage = reader.ReadLine();
+
             Thread readForeverThread = new Thread(new ThreadStart(readForever));
             readForeverThread.Start();
+
             return welcomeMessage;
+        }
+
+        private void startListening()
+        {
+            TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 16001);
+            listener.Start();
+            listener.AcceptSocket();
+            
         }
 
         private void readForever()
