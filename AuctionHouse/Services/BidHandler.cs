@@ -94,7 +94,7 @@ namespace Services
                     writer.WriteLine("Serveren lukkes!");
                     BoolRun = false;
                 }
-                if (textFromClientArray[0] == "byd")
+                if (textFromClientArray[0] == "bid")
                 {
                     bool success = placeBid(textFromClientArray[1], textFromClientArray[2]);
 
