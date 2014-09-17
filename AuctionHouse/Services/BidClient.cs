@@ -54,7 +54,7 @@ namespace Services
             Thread readForeverThread = new Thread(new ThreadStart(readForever));
             readForeverThread.Start();
 
-            return welcomeMessage + "\n";
+            return welcomeMessage;
         }
 
         private void readForever()

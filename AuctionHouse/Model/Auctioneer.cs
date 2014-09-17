@@ -81,7 +81,7 @@ namespace Model
 
                 if (IsSold)
                 {
-                    CallThird("Third! \n Item sold to " + item.HighestBidder + " for " + item.Bid + " HollarDollars!");
+                    CallThird("Third! \n " + item.ItemName + " sold to " + item.HighestBidder + " for " + item.Bid + " HollarDollars!");
                 }
                 else
                 {
