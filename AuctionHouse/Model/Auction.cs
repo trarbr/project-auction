@@ -73,14 +73,14 @@ namespace Model
             //NewRound();
         }
 
-        public bool PlaceBid(int id, decimal bid)
+        public bool PlaceBid(int id, decimal bid, string bidder)
         {
             lock (objlock)
             {
                 bool success = false;
                 if (_currentItem.Id == id)
                 {
-                    success = _currentItem.PlaceBid(bid);
+                    success = _currentItem.PlaceBid(bid, bidder);
                     if (success)
                     {
                         NewBidAccepted();

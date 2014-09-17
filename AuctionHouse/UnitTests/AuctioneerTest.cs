@@ -74,7 +74,7 @@ namespace UnitTests
 
             auction.Start(auctioneer);
 
-            auction.PlaceBid(1, 1100);
+            auction.PlaceBid(1, 1100, "bla");
 
             Thread.Sleep(60000);
 

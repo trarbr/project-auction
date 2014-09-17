@@ -22,7 +22,7 @@ namespace Common.Interfaces
         void StartAuction();
 
         // PlaceBid should maybe return something else than just a bool?
-        bool PlaceBid(SAuctionItem auctionItem, decimal amount);
+        bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder);
 
         event AuctionEvent NewRound;
         event AuctionEvent NewBidAccepted;

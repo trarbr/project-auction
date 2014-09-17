@@ -61,12 +61,12 @@ namespace Services
             return itemAsString;
         }
 
-        private bool placeBid(string itemAsString, string amountAsString)
+        private bool placeBid(string itemAsString, string amountAsString, string bidder)
         {
             SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemAsString);
             decimal amount = decimal.Parse(amountAsString);
 
-            return auctionController.PlaceBid(item, amount);
+            return auctionController.PlaceBid(item, amount, bidder);
         }
 
         private void createEventSocket()
@@ -118,7 +118,7 @@ namespace Services
 
                 if (textFromClientArray[0] == "bid")
                 {
-                    bool success = placeBid(textFromClientArray[1], textFromClientArray[2]);
+                    bool success = placeBid(textFromClientArray[1], textFromClientArray[2], textFromClientArray[3]);
 
                     commandWriter.WriteLine(success);
                 }
