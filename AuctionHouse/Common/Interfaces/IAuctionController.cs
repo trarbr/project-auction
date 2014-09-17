@@ -19,6 +19,8 @@ namespace Common.Interfaces
 
         SAuctionItem GetCurrentItem();
 
+        void StartAuction();
+
         // PlaceBid should maybe return something else than just a bool?
         bool PlaceBid(SAuctionItem auctionItem, decimal amount);
 

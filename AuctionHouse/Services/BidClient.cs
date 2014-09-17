@@ -59,7 +59,7 @@ namespace Services
         {
             string message;
 
-            Thread.Sleep(10000);
+            Thread.Sleep(500);
             while (true)
             {
                 message = eventReader.ReadLine();    
@@ -132,5 +132,11 @@ namespace Services
         // BidClient also needs to provide all the events that IAuctionController specify.
         // It needs to have a while-true method that reads from StreamReader and, if the message
         // comes from an event, it needs to fire that event to the user.
+
+
+        public void StartAuction()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

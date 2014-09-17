@@ -20,9 +20,12 @@ namespace Controllers
 
         private object lockage = new object();
         private Auction currentAuction;
+        private Auctioneer auctioneer;
+        private bool auctionStarted;
 
         public AuctionController()
         {
+            auctionStarted = false;
             List<AuctionItem> items = new List<AuctionItem>();
             // make list of AuctionItems
             // make new Auction, set as currentAuction
@@ -43,17 +46,24 @@ namespace Controllers
                 currentAuction.AddItem(item);
             }
 
-            Auctioneer auctioneer = new Auctioneer(currentAuction);
+            auctioneer = new Auctioneer(currentAuction);
 
             // resend the events
-            currentAuction.NewRound += NewRound;
-            currentAuction.NewBidAccepted += NewBidAccepted;
+            currentAuction.NewRound += newRound;
+            currentAuction.NewBidAccepted += newBidAccepted;
 
             auctioneer.CallFirst += callFirst;
             auctioneer.CallSecond += callSecond;
             auctioneer.CallThird += callThird;
+        }
 
-            currentAuction.Start(auctioneer);
+        public void StartAuction()
+        {
+            if (!auctionStarted)
+            {
+                currentAuction.Start(auctioneer);
+                auctionStarted = true;
+            }
         }
 
         /* not needed
@@ -109,6 +119,16 @@ namespace Controllers
         public void callThird(string message)
         {
             CallThird(message);
+        }
+
+        public void newBidAccepted()
+        {
+            NewBidAccepted();
+        }
+
+        public void newRound()
+        {
+            NewRound();
         }
     }
 }

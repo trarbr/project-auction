@@ -102,6 +102,8 @@ namespace Services
                 createEventSocket();
             }
 
+            auctionController.StartAuction();
+
             bool BoolRun = true;
 
             string textFromClient;
