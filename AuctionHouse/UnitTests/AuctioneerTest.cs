@@ -20,7 +20,7 @@ namespace UnitTests
             Auction auction = new Auction();
             auction.AddItem(item);
 
-            Auctioneer auctioneer = new Auctioneer(auction, 10000, 5000, 3000);
+            Auctioneer auctioneer = new Auctioneer(auction, 500, 500, 500);
 
             auctioneer.CallFirst += delegate(string message)
             {
@@ -39,11 +39,12 @@ namespace UnitTests
 
             auction.Start(auctioneer);
 
-            Thread.Sleep(60000);
+            Thread.Sleep(2000);
 
             Assert.AreEqual("First!", receivedEvents[0]);
             Assert.AreEqual("Second!", receivedEvents[1]);
-            Assert.AreEqual("Item not sold", receivedEvents[2]);
+            bool containsThird = receivedEvents[2].Contains("Third!");
+            Assert.IsTrue(containsThird);
         }
 
         [TestMethod]
@@ -55,7 +56,7 @@ namespace UnitTests
             Auction auction = new Auction();
             auction.AddItem(item);
 
-            Auctioneer auctioneer = new Auctioneer(auction, 10000, 5000, 3000);
+            Auctioneer auctioneer = new Auctioneer(auction, 500, 500, 500);
 
             auctioneer.CallFirst += delegate(string message)
             {
@@ -76,11 +77,12 @@ namespace UnitTests
 
             auction.PlaceBid(1, 1100, "bla");
 
-            Thread.Sleep(60000);
+            Thread.Sleep(2000);
 
             Assert.AreEqual("First!", receivedEvents[0]);
             Assert.AreEqual("Second!", receivedEvents[1]);
-            Assert.AreEqual("Item sold to highest bidder", receivedEvents[2]);
+            bool containsThird = receivedEvents[2].Contains("Third!");
+            Assert.IsTrue(containsThird);
         }
     }
 }
