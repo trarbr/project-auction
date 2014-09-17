@@ -8,56 +8,89 @@ namespace Model
 {
     public class AuctionItem
     {
-        // Added by Troels
-        public int Id { get; set; }
-
-        private string _itemName;
-        private decimal _bid;
-        private bool _sold;
-        private decimal _minimumSoldPrice;
-        
-        
+        public int Id 
+        {
+            get 
+            {
+                lock (auctionItemLock)
+                {
+                    return _id; 
+                }
+            }
+        }
         public string ItemName
         {
-            get { return _itemName; }
-            set { _itemName = value; }
+            get 
+            {
+                lock (auctionItemLock)
+                {
+                    return _itemName; 
+                }
+            }
         }
-
         public decimal Bid
         {
-            get { return _bid; }
-            set { _bid = value; }
+            get 
+            {
+                lock (auctionItemLock)
+                {
+                    return _bid; 
+                }
+            }
         }
+        private int _id;
+        private string _itemName;
+        private decimal _bid;
+
+        private bool sold;
+        private decimal minimumSoldPrice;
+        private object auctionItemLock;
         
-        public AuctionItem(string itemName, int bid, decimal minimumSoldPrice)
+        public AuctionItem(int id, string itemName, decimal minimumBid, decimal minimumSoldPrice)
         {
-            ItemName = itemName;
-            Bid = bid;
-           _minimumSoldPrice = minimumSoldPrice;
+            // No race conditions in the constructor, as the item has not yet been added to the 
+            // Auction, so no use of lock.
+            auctionItemLock = new object();
+            _id = id;
+            _itemName = itemName;
+            _bid = minimumBid;
+            this.minimumSoldPrice = minimumSoldPrice;
         }
 
-        public bool PlaceBid(decimal newBid)
+        public bool PlaceBid(decimal amount)
         {
-            if (newBid > Bid && _sold == false)
+            bool success = false;
+            lock (auctionItemLock)
             {
-                Bid = newBid;
-                return true;
+                if (amount > _bid && sold == false)
+                {
+                    _bid = amount;
+                    success = true;
+                }
+                else
+                {
+                    success = false;
+                }
             }
-           return false;
-            
+
+            return success;
         }
 
-        public bool IsSold()
+        public bool EvaluateIfSold()
         {
-            if (Bid > _minimumSoldPrice)
+            lock (auctionItemLock)
             {
-                _sold = true;
+                if (_bid > minimumSoldPrice)
+                {
+                    sold = true;
+                }
+                else
+                {
+                    sold = false;
+                }
             }
-            else
-            {
-                _sold = false;
-            }
-            return _sold;
+
+            return sold;
         }
     }
 }

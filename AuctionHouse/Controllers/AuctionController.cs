@@ -28,13 +28,14 @@ namespace Controllers
             // make new Auction, set as currentAuction
             // subscribe to events from currentAuction
             // make Auctioneer, pass in Auction
-            AuctionItem item1 = new AuctionItem("chair", 100, 10000);
+
+            AuctionItem item1 = new AuctionItem(1, "chair", 100, 10000);
             items.Add(item1);
-            AuctionItem item2 = new AuctionItem("car", 100, 10000);
+            AuctionItem item2 = new AuctionItem(2, "car", 100, 10000);
             items.Add(item2);
-            AuctionItem item3 = new AuctionItem("couch", 100, 10000);
+            AuctionItem item3 = new AuctionItem(3, "couch", 100, 10000);
             items.Add(item3);
-                      
+
             currentAuction = new Auction();
 
             foreach (AuctionItem item in items)

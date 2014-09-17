@@ -18,12 +18,21 @@ namespace Model
         private Timer timer;
         private int callNumber;
         private Auction auction;
+        private int firstTimeout;
+        private int secondTimeout;
+        private int thirdTimeout;
 
+
+        // Would be less painful to test if timer values were set in constructor
         public Auctioneer(Auction auction)
         {
             this.auction = auction;
             auction.NewRound += startCountDown;
             auction.NewBidAccepted += resetTimer;
+
+            this.firstTimeout = 30000;
+            this.secondTimeout = 5000;
+            this.thirdTimeout = 3000;
 
             timer = new Timer();
             timer.Elapsed += timerSignal;
@@ -34,7 +43,7 @@ namespace Model
             callNumber = 1;
             // timer.stop?
 
-            timer.Interval = 30000;
+            timer.Interval = firstTimeout;
             timer.Start();
         }
 
@@ -52,14 +61,14 @@ namespace Model
             {
                 CallFirst("First!");
                 callNumber++;
-                timer.Interval = 5000;
+                timer.Interval = secondTimeout;
                 timer.Start();
             }
             else if (callNumber == 2)
             {
                 CallSecond("Second!");
                 callNumber++;
-                timer.Interval = 3000;
+                timer.Interval = thirdTimeout;
                 timer.Start();
             }
             else
