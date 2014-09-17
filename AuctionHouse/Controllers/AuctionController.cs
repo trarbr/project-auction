@@ -95,7 +95,7 @@ namespace Controllers
             
         }
 
-        public bool PlaceBid(SAuctionItem auctionItem, decimal amount)
+        public bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder)
         {
             // only pass the bid if the SAuctionItem.Id matches currentItem.Id
             // that's application specific business logic magic happening right there!
@@ -103,7 +103,7 @@ namespace Controllers
             // if you want to pass it on to currentAuction without checking Id (so you don't need 
             // currentItem), Auction needs a finder method which returns the currentItem on given
             // Id)
-            return currentAuction.PlaceBid(auctionItem.Id, amount);
+            return currentAuction.PlaceBid(auctionItem.Id, amount, bidder);
         }
 
         public void callFirst(string message)

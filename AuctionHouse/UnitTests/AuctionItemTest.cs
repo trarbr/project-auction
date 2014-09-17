@@ -24,7 +24,7 @@ namespace UnitTests
             AuctionItem item = getAuctionItem();
             decimal newBid = 120;
 
-            bool success = item.PlaceBid(newBid);
+            bool success = item.PlaceBid(newBid, "bla");
 
             decimal expectedBid = newBid;
             decimal actualBid = item.Bid;
@@ -39,7 +39,7 @@ namespace UnitTests
             AuctionItem item = getAuctionItem();
             decimal newBid = 80;
 
-            bool success = item.PlaceBid(newBid);
+            bool success = item.PlaceBid(newBid, "bla");
 
             decimal expectedBid = 100;
             decimal actualBid = item.Bid;
@@ -53,7 +53,7 @@ namespace UnitTests
         {
             AuctionItem item = getAuctionItem();
 
-            item.PlaceBid(1100);
+            item.PlaceBid(1100, "bla");
 
             bool isSold = item.EvaluateIfSold();
 
@@ -64,7 +64,7 @@ namespace UnitTests
         public void TestEvaluateIfSoldFalse()
         {
             AuctionItem item = getAuctionItem();
-            item.PlaceBid(200);
+            item.PlaceBid(200, "bla");
 
             bool isSold = item.EvaluateIfSold();
 
@@ -75,10 +75,10 @@ namespace UnitTests
         public void TestPlaceBidWhenSold()
         {
             AuctionItem item = getAuctionItem();
-            item.PlaceBid(1100);
+            item.PlaceBid(1100, "bla");
             item.EvaluateIfSold();
 
-            bool success = item.PlaceBid(1200);
+            bool success = item.PlaceBid(1200, "bla");
 
             Assert.IsFalse(success);
         }

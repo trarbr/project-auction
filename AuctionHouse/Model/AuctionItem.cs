@@ -38,6 +38,21 @@ namespace Model
                 }
             }
         }
+
+        private string _highestBidder;
+
+        public string HighestBidder
+        {
+            get
+            {
+                lock (auctionItemLock)
+                {
+                    return _highestBidder;
+                }
+            }
+        }
+        
+
         private int _id;
         private string _itemName;
         private decimal _bid;
@@ -57,7 +72,7 @@ namespace Model
             this.minimumSoldPrice = minimumSoldPrice;
         }
 
-        public bool PlaceBid(decimal amount)
+        public bool PlaceBid(decimal amount, string bidder)
         {
             bool success = false;
             lock (auctionItemLock)
@@ -66,6 +81,7 @@ namespace Model
                 {
                     _bid = amount;
                     success = true;
+                    _highestBidder = bidder;
                 }
                 else
                 {

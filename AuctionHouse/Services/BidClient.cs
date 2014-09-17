@@ -16,6 +16,8 @@ namespace Services
 {
     public class BidClient : IAuctionController
     {
+        private TcpClient commandClient;
+
         public event AuctionEvent NewRound;
         public event AuctionEvent NewBidAccepted;
         public event AuctioneerEvent CallFirst;
@@ -38,7 +40,7 @@ namespace Services
         public string Connect()
         {
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
-            TcpClient commandClient = new TcpClient(serverIp, port);
+            commandClient = new TcpClient(serverIp, port);
             NetworkStream commandStream = commandClient.GetStream();
             commandReader = new StreamReader(commandStream);
             commandWriter = new StreamWriter(commandStream);
@@ -112,7 +114,7 @@ namespace Services
         }
 
 
-        public bool PlaceBid(SAuctionItem auctionItem, decimal amount)
+        public bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder)
         {
             // beware of handling spaces correctly in the protocol!
             // maybe split on something other than spaces, like " | "
@@ -121,12 +123,14 @@ namespace Services
             // and the controller wouldn't even have to know about it!
             string itemAsString = JsonConvert.SerializeObject(auctionItem);
 
-                commandWriter.WriteLine("bid|" + itemAsString + "|" + amount);
+            bidder += commandClient.Client.LocalEndPoint.ToString(); 
 
-                bool success;
-                bool.TryParse(commandReader.ReadLine(), out success);
+            commandWriter.WriteLine("bid|" + itemAsString + "|" + amount + "|" + bidder);
 
-                return success;
+            bool success;
+            bool.TryParse(commandReader.ReadLine(), out success);
+
+            return success;
         }
 
         // BidClient also needs to provide all the events that IAuctionController specify.
