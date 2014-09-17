@@ -24,36 +24,30 @@ namespace Services
 
         private string serverIp;
         private int port;
-        private StreamReader reader;
-        private StreamWriter writer;
-        private object lockObj;
-        private bool readForeverBool;
-        private Socket eventSocket;
+        private StreamReader commandReader;
+        private StreamWriter commandWriter;
+        private StreamReader eventReader;
 
         public BidClient(string serverIp, int port)
         {
             // give it IP and port of server?
             this.serverIp = serverIp;
             this.port = port;
-            this.lockObj = new object();
-
-
-
-            //eventSocket = listener.AcceptSocket();
-            //EndPoint eventPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16001);
-            //eventSocket.Bind(eventPoint);
         }
 
         public string Connect()
         {
-            new Thread(startListening).Start();
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
-            TcpClient client = new TcpClient(serverIp, port);
-            NetworkStream stream = client.GetStream();
-            reader = new StreamReader(stream);
-            writer = new StreamWriter(stream);
-            writer.AutoFlush = true;
-            string welcomeMessage = reader.ReadLine();
+            TcpClient commandClient = new TcpClient(serverIp, port);
+            NetworkStream commandStream = commandClient.GetStream();
+            commandReader = new StreamReader(commandStream);
+            commandWriter = new StreamWriter(commandStream);
+            commandWriter.AutoFlush = true;
+            string welcomeMessage = commandReader.ReadLine();
+
+            TcpClient eventClient = new TcpClient(serverIp, 16001);
+            NetworkStream eventStream = eventClient.GetStream();
+            eventReader = new StreamReader(eventStream);
 
             Thread readForeverThread = new Thread(new ThreadStart(readForever));
             readForeverThread.Start();
@@ -61,25 +55,14 @@ namespace Services
             return welcomeMessage;
         }
 
-        private void startListening()
-        {
-            TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 16001);
-            listener.Start();
-            listener.AcceptSocket();
-            
-        }
-
         private void readForever()
         {
             string message;
 
             Thread.Sleep(10000);
-            while (readForeverBool)
+            while (true)
             {
-                lock (lockObj)
-                {
-                    message = reader.ReadLine();    
-                }
+                message = eventReader.ReadLine();    
                 
                 if (message.Contains("NewRound"))
                 {
@@ -101,7 +84,6 @@ namespace Services
                 {
                     CallThird(message);
                 }
-
             }
         }
 
@@ -121,16 +103,12 @@ namespace Services
             // send request
             // receive response
             // deserialize into struct
-            lock (lockObj)
-            {
-                writer.WriteLine("get");
-                string itemString = reader.ReadLine();
+
+                commandWriter.WriteLine("get");
+                string itemString = commandReader.ReadLine();
                 SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
 
-                readForeverBool = false;
-                Thread readForeverThread = new Thread(new ThreadStart(readForever));
                 return item;
-            }
         }
 
 
@@ -143,19 +121,12 @@ namespace Services
             // and the controller wouldn't even have to know about it!
             string itemAsString = JsonConvert.SerializeObject(auctionItem);
 
-            lock (lockObj)
-            {
-
-                writer.WriteLine("bid|" + itemAsString + "|" + amount);
+                commandWriter.WriteLine("bid|" + itemAsString + "|" + amount);
 
                 bool success;
-                bool.TryParse(reader.ReadLine(), out success);
-
-                readForeverBool = false;
-                Thread readForeverThread = new Thread(new ThreadStart(readForever));
+                bool.TryParse(commandReader.ReadLine(), out success);
 
                 return success;
-            }
         }
 
         // BidClient also needs to provide all the events that IAuctionController specify.

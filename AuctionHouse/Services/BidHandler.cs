@@ -10,35 +10,31 @@ using System.Threading.Tasks;
 using Common.Interfaces;
 using Common.Structs;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Services
 {
     class BidHandler
     {
         private IAuctionController auctionController;
-        private Socket socket;
+        private Socket commandSocket;
+        private Socket eventSocket;
 
-        private StreamReader reader;
-        private StreamWriter writer;
+        private StreamReader commandReader;
+        private StreamWriter commandWriter;
 
+        private StreamReader eventReader;
+        private StreamWriter eventWriter;
+        private NetworkStream eventStream;
+
+        private object lockObj;
         // constructor should also take a Socket, which it is passed from the server
-        public BidHandler(IAuctionController auctionController, Socket socket)
+        public BidHandler(IAuctionController auctionController, Socket commandSocket, object lockObj)
         {
             this.auctionController = auctionController;
-            this.socket = socket;
+            this.commandSocket = commandSocket;
 
-
-
-            //Socket eventSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            //EndPoint eventPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16001);
-            //eventSocket.Connect(eventPoint);
-
-
-            //Console.WriteLine(eventSocket.LocalEndPoint);
-
-           
-            
-        
+            this.lockObj = lockObj;
             // subscribe to events on controller
             // when an event is fired on the controller, it has to send a new message to the
             // client.
@@ -48,8 +44,6 @@ namespace Services
             auctionController.CallFirst += First;
             auctionController.CallSecond += Second;
             auctionController.CallThird += Third;
-            TcpClient eventClient = new TcpClient("127.0.0.1", 16001);
-            // setup NetworkStream, StreamReader and StreamWriter
         }
 
         // needs a while-true method that reads from the StreamReader
@@ -75,16 +69,38 @@ namespace Services
             return auctionController.PlaceBid(item, amount);
         }
 
+        private void createEventSocket()
+        {
+            TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 16001);
+            listener.Start();
+            
+            eventSocket = listener.AcceptSocket();
+
+            eventStream = new NetworkStream(eventSocket);
+            eventReader = new StreamReader(eventStream);
+            eventWriter = new StreamWriter(eventStream);
+            eventWriter.AutoFlush = true;
+
+            listener.Stop();
+        }
+
         internal void Run()
         {
-            NetworkStream stream = new NetworkStream(socket);
-            reader = new StreamReader(stream);
-            writer = new StreamWriter(stream);
-            writer.AutoFlush = true;
+            NetworkStream commandStream;
 
-            Console.WriteLine("Server started.");
-            Console.WriteLine("IP: " + socket.RemoteEndPoint + " is connected");
-            writer.WriteLine("you are connected!");
+            lock (lockObj)
+            {
+                commandStream = new NetworkStream(commandSocket);
+                commandReader = new StreamReader(commandStream);
+                commandWriter = new StreamWriter(commandStream);
+                commandWriter.AutoFlush = true;
+
+                Console.WriteLine("Server started.");
+                Console.WriteLine("IP: " + commandSocket.RemoteEndPoint + " is connected");
+                commandWriter.WriteLine("you are connected!");
+                
+                createEventSocket();
+            }
 
             bool BoolRun = true;
 
@@ -93,67 +109,68 @@ namespace Services
 
             while (BoolRun)
             {
-                textFromClient = reader.ReadLine();
+                textFromClient = commandReader.ReadLine();
                 textFromClientArray = textFromClient.Split('|');
 
-                Console.WriteLine(socket.RemoteEndPoint + ": " + textFromClient);
+                Console.WriteLine(commandSocket.RemoteEndPoint + ": " + textFromClient);
 
-                if (textFromClient == "hej")
-                {
-                    writer.WriteLine("YEEEEEEEAAAAH!!!!");
-                }
-                if (textFromClientArray[0] == "exit" || textFromClientArray[0] == "close")
-                {
-                    writer.WriteLine("Serveren lukkes!");
-                    BoolRun = false;
-                }
                 if (textFromClientArray[0] == "bid")
                 {
                     bool success = placeBid(textFromClientArray[1], textFromClientArray[2]);
 
-                    writer.WriteLine(success);
+                    commandWriter.WriteLine(success);
                 }
-                if (textFromClientArray[0] == "get")
+                else if (textFromClientArray[0] == "get")
                 {
                     string item = getCurrentItem();
 
-                    writer.WriteLine(item);
+                    commandWriter.WriteLine(item);
+                }
+                else if (textFromClientArray[0] == "exit")
+                {
+                    commandWriter.WriteLine("Fucking Off!");
+                    BoolRun = false;
                 }
                 else
                 {
-                    writer.WriteLine("Skriv nu for helvede korrekt!... ALTSÅ!..TSK");
+                    commandWriter.WriteLine("Skriv nu for helvede korrekt!... ALTSÅ!..TSK");
                 }
             }
 
-            writer.Close();
-            reader.Close();
-            stream.Close();
-            socket.Close();
+            commandWriter.Close();
+            commandReader.Close();
+            commandStream.Close();
+            commandSocket.Close();
+
+            eventReader.Close();
+            eventWriter.Close();
+            eventStream.Close();
+            eventSocket.Close();
         }
 
         public void First(string message)
         {
-            writer.WriteLine(message);
+            eventWriter.WriteLine(message);
         }
 
         private void Third(string message)
         {
-            writer.WriteLine(message);
+            eventWriter.WriteLine(message);
         }
 
         private void Second(string message)
         {
-            writer.WriteLine(message);
+            eventWriter.WriteLine(message);
         }
 
         private void NewBidAccepted()
         {
-            writer.WriteLine("NewBidAccepted");
+            eventWriter.WriteLine("NewBidAccepted");
         }
 
         private void NewRound()
         {
-            writer.WriteLine("NewRound");
+            eventWriter.WriteLine("NewRound");
         }
     }
 }

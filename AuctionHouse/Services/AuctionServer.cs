@@ -15,11 +15,13 @@ namespace Services
         public IPAddress ip = IPAddress.Parse("127.0.0.1");
         private int port;
         private AuctionController auctionController;
+        private object lockObj;
 
         public AuctionServer(int port)
         {
             this.port = port;
             this.auctionController = new AuctionController();
+            lockObj = new object();
         }
 
         public void Run()
@@ -31,7 +33,7 @@ namespace Services
             {
                 Socket socket = listener.AcceptSocket();
 
-                new Thread(new ThreadStart(new BidHandler(auctionController, socket).Run)).Start();
+                new Thread(new ThreadStart(new BidHandler(auctionController, socket, lockObj).Run)).Start();
             }
         }
 
