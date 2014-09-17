@@ -20,7 +20,7 @@ namespace UnitTests
             Auction auction = new Auction();
             auction.AddItem(item);
 
-            Auctioneer auctioneer = new Auctioneer(auction);
+            Auctioneer auctioneer = new Auctioneer(auction, 10000, 5000, 3000);
 
             auctioneer.CallFirst += delegate(string message)
             {
@@ -55,7 +55,7 @@ namespace UnitTests
             Auction auction = new Auction();
             auction.AddItem(item);
 
-            Auctioneer auctioneer = new Auctioneer(auction);
+            Auctioneer auctioneer = new Auctioneer(auction, 10000, 5000, 3000);
 
             auctioneer.CallFirst += delegate(string message)
             {

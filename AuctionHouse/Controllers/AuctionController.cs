@@ -46,7 +46,7 @@ namespace Controllers
                 currentAuction.AddItem(item);
             }
 
-            auctioneer = new Auctioneer(currentAuction);
+            auctioneer = new Auctioneer(currentAuction, 10000, 5000, 3000);
 
             // resend the events
             currentAuction.NewRound += newRound;
