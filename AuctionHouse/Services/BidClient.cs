@@ -43,7 +43,7 @@ namespace Services
             commandReader = new StreamReader(commandStream);
             commandWriter = new StreamWriter(commandStream);
             commandWriter.AutoFlush = true;
-            string welcomeMessage = commandReader.ReadLine();
+            string welcomeMessage = commandReader.ReadLine() + "\n";
 
             TcpClient eventClient = new TcpClient(serverIp, 16001);
             NetworkStream eventStream = eventClient.GetStream();

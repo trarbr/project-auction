@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace AuctionGUI
 {
@@ -35,38 +36,42 @@ namespace AuctionGUI
             bidClient.CallFirst += callFirst;
             bidClient.CallSecond += callSecond;
             bidClient.CallThird += callThird;
-            logLabel.Content += bidClient.Connect();
+            logTextBox.Text += bidClient.Connect();
             getCurrentItem();
         }
 
         private void newRound()
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += "New round event triggered!! \n"));
+                new ThreadStart(() => logTextBox.Text += "New Round Started. \n"));
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => getCurrentItem()));
         }
 
         private void newBidAccepted()
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += "New bid event accepted!! \n"));
+                new ThreadStart(() => logTextBox.Text += "New Bid Accepted. \n"));
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => getCurrentItem()));
         }
 
         private void callThird(string message)
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += message + "\n"));
+                new ThreadStart(() => logTextBox.Text += message + "\n"));
         }
 
         private void callSecond(string message)
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += message + "\n"));
+                new ThreadStart(() => logTextBox.Text += message + "\n"));
         }
 
         private void callFirst(string message)
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += message + "\n"));
+                new ThreadStart(() => logTextBox.Text += message + "\n"));
         }
 
         public void getCurrentItem()
@@ -96,7 +101,7 @@ namespace AuctionGUI
                 }
                 else
                 {
-                    yourBidLabel.Content = "lort";
+                    yourBidLabel.Content = "Bid not accepted";
                 }
             }
             catch (Exception ex)
@@ -104,6 +109,11 @@ namespace AuctionGUI
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private void logTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            logTextBox.ScrollToEnd();
         }
     }
 }

@@ -21,7 +21,8 @@
             <Label x:Name="yourBidLabel" Content="" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <TextBox x:Name="placeBidTextBox" Height="26" TextWrapping="Wrap" Text="" Margin="0,25,0,0" Width="150" HorizontalAlignment="Left"/>
             <Button x:Name="bidButton" Content="Bid now" Width="100" HorizontalAlignment="Left" Margin="50,3,0,0" Click="bidButton_Click"/>
-            <Label x:Name="logLabel" Content="" VerticalAlignment="Top" Margin="0,25,0,0"/>
+            <TextBox x:Name="logTextBox" TextWrapping="Wrap" Text="" Margin="0,25,0,0"
+                     VerticalScrollBarVisibility="Auto" TextChanged="logTextBox_TextChanged" IsReadOnly="True" Height="100"/>
         </StackPanel>
         <StackPanel Grid.Column="2" Orientation="Horizontal">
             <Label Content="Timeleft:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
