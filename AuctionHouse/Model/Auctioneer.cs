@@ -24,15 +24,15 @@ namespace Model
 
 
         // Would be less painful to test if timer values were set in constructor
-        public Auctioneer(Auction auction)
+        public Auctioneer(Auction auction, int firstTimeout, int secondTimeout, int thirdTimeout)
         {
             this.auction = auction;
             auction.NewRound += startCountDown;
             auction.NewBidAccepted += resetTimer;
 
-            this.firstTimeout = 30000;
-            this.secondTimeout = 5000;
-            this.thirdTimeout = 3000;
+            this.firstTimeout = firstTimeout;
+            this.secondTimeout = secondTimeout;
+            this.thirdTimeout = thirdTimeout;
 
             timer = new Timer();
             timer.Elapsed += timerSignal;
