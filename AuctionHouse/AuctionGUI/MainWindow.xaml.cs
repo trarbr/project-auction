@@ -39,6 +39,12 @@ namespace AuctionGUI
             getCurrentItem();
         }
 
+        private void newRound()
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(() => logLabel.Content += "New round event triggered!! \n"));
+        }
+
         private void newBidAccepted()
         {
             Dispatcher.BeginInvoke(
@@ -98,12 +104,6 @@ namespace AuctionGUI
                 MessageBox.Show(ex.Message);
             }
 
-        }
-
-        private void newRound()
-        {
-            Dispatcher.BeginInvoke(
-                new ThreadStart(() => logLabel.Content += "New round event triggered!! \n"));
         }
     }
 }
