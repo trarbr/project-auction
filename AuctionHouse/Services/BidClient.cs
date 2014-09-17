@@ -82,7 +82,7 @@ namespace Services
                 {
                     CallSecond(message);
                 }
-                else if (message.Contains("Item"))
+                else if (message.Contains("Third"))
                 {
                     CallThird(message);
                 }
