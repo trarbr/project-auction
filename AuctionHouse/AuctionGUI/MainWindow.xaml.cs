@@ -45,6 +45,8 @@ namespace AuctionGUI
             Dispatcher.BeginInvoke(
                 new ThreadStart(() => logTextBox.Text += "New Round Started. \n"));
             Dispatcher.BeginInvoke(
+                new ThreadStart(() => currentBidLabel.Content = ""));
+            Dispatcher.BeginInvoke(
                 new ThreadStart(() => getCurrentItem()));
         }
 
