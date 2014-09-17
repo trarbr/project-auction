@@ -34,14 +34,14 @@ namespace Controllers
             items.Add(item2);
             AuctionItem item3 = new AuctionItem("couch", 100, 10000);
             items.Add(item3);
-            
+                      
+            currentAuction = new Auction();
+
             foreach (AuctionItem item in items)
             {
                 currentAuction.AddItem(item);
             }
 
-            
-            currentAuction = new Auction();
             Auctioneer auctioneer = new Auctioneer(currentAuction);
 
             // resend the events
@@ -52,7 +52,6 @@ namespace Controllers
             auctioneer.CallSecond += callSecond;
             auctioneer.CallThird += callThird;
 
-            currentAuction.AddItem(items);
             currentAuction.Start(auctioneer);
         }
 
