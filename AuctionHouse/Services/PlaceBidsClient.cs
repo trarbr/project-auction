@@ -26,22 +26,21 @@ namespace Services
         public event AuctioneerEvent CallThird;
 
         private string serverIp;
-        private int port;
+        private int serverPort;
         private StreamReader commandReader;
         private StreamWriter commandWriter;
         private StreamReader eventReader;
 
-        public PlaceBidsClient(string serverIp, int port)
+        public PlaceBidsClient(string serverIp, int serverPort)
         {
-            // give it IP and port of server?
             this.serverIp = serverIp;
-            this.port = port;
+            this.serverPort = serverPort;
         }
 
         private string connect()
         {
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
-            commandClient = new TcpClient(serverIp, port);
+            commandClient = new TcpClient(serverIp, serverPort);
             NetworkStream commandStream = commandClient.GetStream();
             commandReader = new StreamReader(commandStream);
             commandWriter = new StreamWriter(commandStream);
@@ -51,14 +50,13 @@ namespace Services
             TcpClient eventClient = new TcpClient(serverIp, 16001);
             NetworkStream eventStream = eventClient.GetStream();
             eventReader = new StreamReader(eventStream);
-
-            Thread readForeverThread = new Thread(new ThreadStart(readForever));
-            readForeverThread.Start();
+            Thread readEvetsThread = new Thread(new ThreadStart(readEvents));
+            readEvetsThread.Start();
 
             return welcomeMessage;
         }
 
-        private void readForever()
+        private void readEvents()
         {
             string message;
 
@@ -137,7 +135,6 @@ namespace Services
         // BidClient also needs to provide all the events that IAuctionController specify.
         // It needs to have a while-true method that reads from StreamReader and, if the message
         // comes from an event, it needs to fire that event to the user.
-
 
         public string JoinAuction()
         {
