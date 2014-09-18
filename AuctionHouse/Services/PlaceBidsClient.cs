@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
+using Common.Delegates;
 using Controllers.Structs;
 using Controllers;
 using System.Net.Sockets;

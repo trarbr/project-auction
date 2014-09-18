@@ -5,13 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Controllers.Structs;
+using Common.Delegates;
 
 namespace Controllers
 {
-    // what on earth are those things doing here?
-    public delegate void AuctioneerEvent(string message);
-    public delegate void AuctionEvent();
-
     public interface IPlaceBidsController
     {
         // JoinAuction should maybe return a bidder? Otherwise seems unnecessary
