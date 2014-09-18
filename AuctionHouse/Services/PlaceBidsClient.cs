@@ -5,8 +5,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-using Common.Structs;
-using Common.Interfaces;
+using Controllers.Structs;
+using Controllers;
 using System.Net.Sockets;
 using System.IO;
 using Newtonsoft.Json;
@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace Services
 {
-    public class BidClient : IAuctionController
+    public class PlaceBidsClient : IPlaceBidsController
     {
         private TcpClient commandClient;
 
@@ -30,14 +30,14 @@ namespace Services
         private StreamWriter commandWriter;
         private StreamReader eventReader;
 
-        public BidClient(string serverIp, int port)
+        public PlaceBidsClient(string serverIp, int port)
         {
             // give it IP and port of server?
             this.serverIp = serverIp;
             this.port = port;
         }
 
-        public string Connect()
+        private string connect()
         {
             // connect to the server, setup NetworkStream, StreamReader and StreamWriter
             commandClient = new TcpClient(serverIp, port);
@@ -138,9 +138,9 @@ namespace Services
         // comes from an event, it needs to fire that event to the user.
 
 
-        public void StartAuction()
+        public string JoinAuction()
         {
-            throw new NotImplementedException();
+            return connect();
         }
     }
 }

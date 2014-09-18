@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-using Common.Interfaces;
+using Common.Delegates;
 
 namespace Model
 {

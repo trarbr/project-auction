@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Common.Interfaces;
-using Common.Structs;
+using Common.Delegates;
+using Controllers;
+using Controllers.Structs;
 using Model;
 
 namespace Controllers
 {
-    public class AuctionController : IAuctionController
+    public class PlaceBidsController : IPlaceBidsController
     {
         public event AuctionEvent NewRound;
         public event AuctionEvent NewBidAccepted;
@@ -23,7 +24,7 @@ namespace Controllers
         private Auctioneer auctioneer;
         private bool auctionStarted;
 
-        public AuctionController()
+        public PlaceBidsController()
         {
             auctionStarted = false;
             List<AuctionItem> items = new List<AuctionItem>();
@@ -57,13 +58,15 @@ namespace Controllers
             auctioneer.CallThird += callThird;
         }
 
-        public void StartAuction()
+        public string JoinAuction()
         {
             if (!auctionStarted)
             {
                 currentAuction.Start(auctioneer);
                 auctionStarted = true;
             }
+
+            return "Welcome";
         }
 
         /* not needed

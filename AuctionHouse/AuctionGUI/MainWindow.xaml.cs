@@ -1,4 +1,5 @@
-﻿using Common.Structs;
+﻿using Controllers;
+using Controllers.Structs;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -24,19 +25,32 @@ namespace AuctionGUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private BidClient bidClient;
+        private IPlaceBidsController placeBidsController;
         private SAuctionItem auctionItem;
 
         public MainWindow()
         {
             InitializeComponent();
-            bidClient = new BidClient("localhost", 13370);
-            bidClient.NewRound += newRound;
-            bidClient.NewBidAccepted += newBidAccepted;
-            bidClient.CallFirst += callFirst;
-            bidClient.CallSecond += callSecond;
-            bidClient.CallThird += callThird;
-            logTextBox.Text += bidClient.Connect();
+
+            bool useAppLocally = false;
+
+            if (useAppLocally)
+            {
+                // Connect directly to the Controller
+                placeBidsController = new PlaceBidsController();
+            }
+            else
+            {
+                // Connect to the Controller through the SocketService:
+                placeBidsController = new PlaceBidsClient("localhost", 13370);
+            }
+
+            placeBidsController.NewRound += newRound;
+            placeBidsController.NewBidAccepted += newBidAccepted;
+            placeBidsController.CallFirst += callFirst;
+            placeBidsController.CallSecond += callSecond;
+            placeBidsController.CallThird += callThird;
+            logTextBox.Text += placeBidsController.JoinAuction();
             getCurrentItem();
         }
 
@@ -83,7 +97,7 @@ namespace AuctionGUI
         {
             //try
             //{
-                auctionItem = bidClient.GetCurrentItem();
+                auctionItem = placeBidsController.GetCurrentItem();
                 itemLabel.Content = auctionItem.Description;
                 currentBidLabel.Content = auctionItem.MaxBid;
             //}
@@ -99,7 +113,7 @@ namespace AuctionGUI
             {
                 decimal amount;
                 decimal.TryParse(placeBidTextBox.Text, out amount);
-                bool success = bidClient.PlaceBid(auctionItem, amount, "adolf aahhhhhh");
+                bool success = placeBidsController.PlaceBid(auctionItem, amount, "adolf aahhhhhh");
                 if (success == true)
                 {
                     yourBidLabel.Content = amount + " (Accepted)";
