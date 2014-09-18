@@ -88,8 +88,8 @@ namespace Controllers
                 SAuctionItem sCurrentItem = new SAuctionItem()
                 {
                     Id = currentItem.Id,
-                    Description = currentItem.ItemName,
-                    MaxBid = currentItem.Bid
+                    ItemName = currentItem.ItemName,
+                    Bid = currentItem.Bid
                 };
                 return sCurrentItem;
             }

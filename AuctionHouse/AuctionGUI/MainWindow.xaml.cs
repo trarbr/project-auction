@@ -98,8 +98,8 @@ namespace AuctionGUI
             //try
             //{
                 auctionItem = placeBidsController.GetCurrentItem();
-                itemLabel.Content = auctionItem.Description;
-                currentBidLabel.Content = auctionItem.MaxBid;
+                itemLabel.Content = auctionItem.ItemName;
+                currentBidLabel.Content = auctionItem.Bid;
             //}
             //catch (Exception ex)
             //{

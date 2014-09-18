@@ -9,7 +9,7 @@ namespace Controllers.Structs
     public struct SAuctionItem
     {
         public int Id { get; set; }
-        public string Description { get; set; }
-        public decimal MaxBid { get; set; }
+        public string ItemName { get; set; }
+        public decimal Bid { get; set; }
     }
 }
