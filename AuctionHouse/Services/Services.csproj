@@ -45,8 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuctionServer.cs" />
-    <Compile Include="BidClient.cs" />
-    <Compile Include="BidHandler.cs" />
+    <Compile Include="PlaceBidsClient.cs" />
+    <Compile Include="PlaceBidsHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -63,6 +63,9 @@
       <Project>{d2ca6073-9e8d-4bf4-9cb7-cd7ed7664027}</Project>
       <Name>Controllers</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Common.Interfaces;
+using Common.Delegates;
 
 namespace Model
 {
@@ -20,6 +20,7 @@ namespace Model
         private Auctioneer auctioneer;
 
         private object objlock = new object();
+        private bool isActive;
 
         public AuctionItem CurrentItem
         {
@@ -48,6 +49,7 @@ namespace Model
 
         public void Start(Auctioneer auctioneer)
         {
+            isActive = true;
             this.auctioneer = auctioneer;
             auctioneer.CallThird += sellNextItem;
             _currentItem = auctionItems.Dequeue();
@@ -58,7 +60,9 @@ namespace Model
 
         private void sellNextItem(string message)
         {
+            isActive = false;
             Thread.Sleep(1000);
+            isActive = true;
             // sleep a bit, set next item on auction
             lock (objlock)
             {
@@ -78,7 +82,7 @@ namespace Model
             lock (objlock)
             {
                 bool success = false;
-                if (_currentItem.Id == id)
+                if (_currentItem.Id == id && isActive)
                 {
                     success = _currentItem.PlaceBid(bid, bidder);
                     if (success)
@@ -98,6 +102,7 @@ namespace Model
                 return _currentItem.EvaluateIfSold();
             }
         }
+
 
     }
 }

@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Common.Structs;
+using Controllers.Structs;
 
-namespace Common.Interfaces
+namespace Controllers
 {
     // what on earth are those things doing here?
     public delegate void AuctioneerEvent(string message);
     public delegate void AuctionEvent();
 
-    public interface IAuctionController
+    public interface IPlaceBidsController
     {
         // JoinAuction should maybe return a bidder? Otherwise seems unnecessary
         // SAuction JoinAuction();
 
         SAuctionItem GetCurrentItem();
 
-        void StartAuction();
+        string JoinAuction();
 
         // PlaceBid should maybe return something else than just a bool?
         bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder);
