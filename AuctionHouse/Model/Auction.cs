@@ -15,26 +15,21 @@ namespace Model
         public event AuctionEvent NewBidAccepted;
 
         private Queue<AuctionItem> auctionItems;
-
         private AuctionItem _currentItem;
         private Auctioneer auctioneer;
 
-        private object objlock = new object();
-        private bool isActive;
+        private object auctionLock = new object();
+        private bool auctionRunning;
 
         public AuctionItem CurrentItem
         {
-            
             get 
             {
-                lock (objlock){ return _currentItem; }
+                lock (auctionLock)
+                { 
+                    return _currentItem; 
+                }
             }
-            set 
-            {
-                lock (objlock){ _currentItem = value; }
-            }
-            
-            
         }
 
         public Auction()
@@ -49,60 +44,56 @@ namespace Model
 
         public void Start(Auctioneer auctioneer)
         {
-            isActive = true;
-            this.auctioneer = auctioneer;
             auctioneer.CallThird += sellNextItem;
-            _currentItem = auctionItems.Dequeue();
 
-            // should we tell auctioneer explicitly? 
-            NewRound();
+            sellNextItem("");
         }
 
+        // sellNextItem has to take a string as input because it subscribes to Auctioneer's 
+        // CallThird, but the string is never used in sellNextItem.
         private void sellNextItem(string message)
         {
-            isActive = false;
+            // Stop the auction, wait a second then start the next round
+            auctionRunning = false;
             Thread.Sleep(1000);
-            isActive = true;
-            // sleep a bit, set next item on auction
-            lock (objlock)
+            auctionRunning = true;
+            if (auctionItems.Count != 0)
             {
-                if (auctionItems.Count != 0)
+                lock (auctionLock)
                 {
                     _currentItem = auctionItems.Dequeue();
-                    NewRound();
                 }
-                
+
+                NewRound();
             }
-            //problems having signale calls inside a lock?
-            //NewRound();
         }
 
         public bool PlaceBid(int id, decimal bid, string bidder)
         {
-            lock (objlock)
+            bool success = false;
+            lock (auctionLock)
             {
-                bool success = false;
-                if (_currentItem.Id == id && isActive)
+                // If the bid is for an old item or the Auction is currently paused, don't try
+                // to place the bid.
+                if (_currentItem.Id == id && auctionRunning)
                 {
                     success = _currentItem.PlaceBid(bid, bidder);
-                    if (success)
-                    {
-                        NewBidAccepted();
-                    }
                 }
-                return success;
             }
-            
+            if (success)
+            {
+                NewBidAccepted();
+            }
+
+            return success;
         }
 
         public bool IsCurrentItemSold()
         {
-            lock (objlock)
+            lock (auctionLock)
             {
                 return _currentItem.EvaluateIfSold();
             }
         }
-
-
     }
 }

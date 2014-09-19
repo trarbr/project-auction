@@ -37,9 +37,36 @@ namespace Services
             this.serverPort = serverPort;
         }
 
+        public string JoinAuction()
+        {
+            return connect();
+        }
+
+        public SAuctionItem GetCurrentItem()
+        {
+            commandWriter.WriteLine("get");
+            string itemString = commandReader.ReadLine();
+            SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
+
+            return item;
+        }
+
+        public bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder)
+        {
+            string itemAsString = JsonConvert.SerializeObject(auctionItem);
+
+            bidder += commandClient.Client.LocalEndPoint.ToString(); 
+
+            commandWriter.WriteLine("bid|" + itemAsString + "|" + amount + "|" + bidder);
+
+            bool success;
+            bool.TryParse(commandReader.ReadLine(), out success);
+
+            return success;
+        }
+
         private string connect()
         {
-            // connect to the server, setup NetworkStream, StreamReader and StreamWriter
             commandClient = new TcpClient(serverIp, serverPort);
             NetworkStream commandStream = commandClient.GetStream();
             commandReader = new StreamReader(commandStream);
@@ -86,59 +113,6 @@ namespace Services
                     CallThird(message);
                 }
             }
-        }
-
-        /* Only needed if the application needs a Bidder to keep track of bids
-         * Then it returns a Bidder, not an SAuction! Bidder has not been added to Model yet
-        public SAuction JoinAuction()
-        {
-            // send request
-            // receive response
-            // serialize into struct
-            throw new NotImplementedException();
-        }
-        */
-
-        public SAuctionItem GetCurrentItem()
-        {
-            // send request
-            // receive response
-            // deserialize into struct
-
-                commandWriter.WriteLine("get");
-                string itemString = commandReader.ReadLine();
-                SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemString);
-
-                return item;
-        }
-
-
-        public bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder)
-        {
-            // beware of handling spaces correctly in the protocol!
-            // maybe split on something other than spaces, like " | "
-            // anyway, it's going to be pretty fragile
-            // it might be less fragile if combining the args into a single Bid struct
-            // and the controller wouldn't even have to know about it!
-            string itemAsString = JsonConvert.SerializeObject(auctionItem);
-
-            bidder += commandClient.Client.LocalEndPoint.ToString(); 
-
-            commandWriter.WriteLine("bid|" + itemAsString + "|" + amount + "|" + bidder);
-
-            bool success;
-            bool.TryParse(commandReader.ReadLine(), out success);
-
-            return success;
-        }
-
-        // BidClient also needs to provide all the events that IAuctionController specify.
-        // It needs to have a while-true method that reads from StreamReader and, if the message
-        // comes from an event, it needs to fire that event to the user.
-
-        public string JoinAuction()
-        {
-            return connect();
         }
     }
 }

@@ -19,40 +19,26 @@ namespace Controllers
         public event AuctioneerEvent CallSecond;
         public event AuctioneerEvent CallThird;
 
-        private object lockage = new object();
-        private Auction currentAuction;
+        private Auction auction;
         private Auctioneer auctioneer;
         private bool auctionStarted;
 
         public PlaceBidsController()
         {
             auctionStarted = false;
-            List<AuctionItem> items = new List<AuctionItem>();
-            // make list of AuctionItems
-            // make new Auction, set as currentAuction
-            // subscribe to events from currentAuction
-            // make Auctioneer, pass in Auction
+            auction = new Auction();
 
-            AuctionItem item1 = new AuctionItem(1, "chair", 100, 10000);
-            items.Add(item1);
-            AuctionItem item2 = new AuctionItem(2, "car", 100, 10000);
-            items.Add(item2);
-            AuctionItem item3 = new AuctionItem(3, "couch", 100, 10000);
-            items.Add(item3);
+            AuctionItem item1 = new AuctionItem(1, "Chair", 2000, 2000);
+            auction.AddItem(item1);
+            AuctionItem item2 = new AuctionItem(2, "Car", 50000, 70000);
+            auction.AddItem(item2);
+            AuctionItem item3 = new AuctionItem(3, "Couch", 400, 400);
+            auction.AddItem(item3);
 
-            currentAuction = new Auction();
+            auctioneer = new Auctioneer(auction, 10000, 5000, 3000);
 
-            foreach (AuctionItem item in items)
-            {
-                currentAuction.AddItem(item);
-            }
-
-            auctioneer = new Auctioneer(currentAuction, 10000, 5000, 3000);
-
-            // resend the events
-            currentAuction.NewRound += newRound;
-            currentAuction.NewBidAccepted += newBidAccepted;
-
+            auction.NewRound += newRound;
+            auction.NewBidAccepted += newBidAccepted;
             auctioneer.CallFirst += callFirst;
             auctioneer.CallSecond += callSecond;
             auctioneer.CallThird += callThird;
@@ -60,53 +46,31 @@ namespace Controllers
 
         public string JoinAuction()
         {
+            // If this is the first client that connects, start the auction.
             if (!auctionStarted)
             {
-                currentAuction.Start(auctioneer);
+                auction.Start(auctioneer);
                 auctionStarted = true;
             }
 
-            return "Welcome";
+            return "Welcome.\n";
         }
-
-        /* not needed
-        public SAuction JoinAuction()
-        {
-            // this really should return a bidder, eh?
-            return new SAuction();
-        }
-        */
 
         public SAuctionItem GetCurrentItem()
         {
-            lock (lockage)
+            AuctionItem currentItem = auction.CurrentItem;
+            SAuctionItem sCurrentItem = new SAuctionItem()
             {
-                AuctionItem currentItem = currentAuction.CurrentItem;
-                // what if the auction is sold in between the individual locks expiring..?
-                // this is going to be invalid (stale) data
-                // to avoid that, lock on the auction...
-                SAuctionItem sCurrentItem = new SAuctionItem()
-                {
-                    Id = currentItem.Id,
-                    ItemName = currentItem.ItemName,
-                    Bid = currentItem.Bid
-                };
-                return sCurrentItem;
-            }
-            
-
-            
+                Id = currentItem.Id,
+                ItemName = currentItem.ItemName,
+                Bid = currentItem.Bid
+            };
+            return sCurrentItem;
         }
 
         public bool PlaceBid(SAuctionItem auctionItem, decimal amount, string bidder)
         {
-            // only pass the bid if the SAuctionItem.Id matches currentItem.Id
-            // that's application specific business logic magic happening right there!
-
-            // if you want to pass it on to currentAuction without checking Id (so you don't need 
-            // currentItem), Auction needs a finder method which returns the currentItem on given
-            // Id)
-            return currentAuction.PlaceBid(auctionItem.Id, amount, bidder);
+            return auction.PlaceBid(auctionItem.Id, amount, bidder);
         }
 
         public void callFirst(string message)

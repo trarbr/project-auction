@@ -45,8 +45,8 @@ namespace AuctionGUI
                 placeBidsController = new PlaceBidsClient("localhost", 13370);
             }
 
-            placeBidsController.NewRound += newRound;
-            placeBidsController.NewBidAccepted += newBidAccepted;
+            placeBidsController.NewRound += newRoundEvent;
+            placeBidsController.NewBidAccepted += newBidAcceptedEvent;
             placeBidsController.CallFirst += callFirst;
             placeBidsController.CallSecond += callSecond;
             placeBidsController.CallThird += callThird;
@@ -54,25 +54,30 @@ namespace AuctionGUI
             getCurrentItem();
         }
 
-        private void newRound()
+        private void newRoundEvent()
         {
             Dispatcher.BeginInvoke(
-                new ThreadStart(() => logTextBox.Text += "New Round Started. \n"));
-            Dispatcher.BeginInvoke(
-                new ThreadStart(() => yourBidLabel.Content = ""));
-            Dispatcher.BeginInvoke(
-                new ThreadStart(() => placeBidTextBox.Text = ""));
-            Dispatcher.BeginInvoke(
-                new ThreadStart(() => getCurrentItem()));
+                new ThreadStart(newRound));
+        }
 
+        private void newRound()
+        {
+            logTextBox.Text += "New round started.\n";
+            yourBidLabel.Content = "";
+            placeBidTextBox.Text = "";
+            getCurrentItem();
+        }
+
+        private void newBidAcceptedEvent()
+        {
+            Dispatcher.BeginInvoke(
+                new ThreadStart(newBidAccepted));
         }
 
         private void newBidAccepted()
         {
-            Dispatcher.BeginInvoke(
-                new ThreadStart(() => logTextBox.Text += "New Bid Accepted. \n"));
-            Dispatcher.BeginInvoke(
-                new ThreadStart(() => getCurrentItem()));
+            logTextBox.Text += "New Bid Accepted.\n";
+            getCurrentItem();
         }
 
         private void callThird(string message)
@@ -95,16 +100,16 @@ namespace AuctionGUI
 
         public void getCurrentItem()
         {
-            //try
-            //{
+            try
+            {
                 auctionItem = placeBidsController.GetCurrentItem();
                 itemLabel.Content = auctionItem.ItemName;
                 currentBidLabel.Content = auctionItem.Bid;
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void bidButton_Click(object sender, RoutedEventArgs e)

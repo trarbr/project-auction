@@ -36,7 +36,5 @@ namespace Services
                 new Thread(new ThreadStart(new PlaceBidsHandler(placeBidsController, socket, lockObj).Run)).Start();
             }
         }
-
-
     }
 }

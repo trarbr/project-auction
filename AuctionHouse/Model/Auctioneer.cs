@@ -15,24 +15,22 @@ namespace Model
         public event AuctioneerEvent CallSecond;
         public event AuctioneerEvent CallThird;
 
+        private Auction auction;
         private Timer timer;
         private int callNumber;
-        private Auction auction;
         private int firstTimeout;
         private int secondTimeout;
         private int thirdTimeout;
 
-
-        // Would be less painful to test if timer values were set in constructor
         public Auctioneer(Auction auction, int firstTimeout, int secondTimeout, int thirdTimeout)
         {
             this.auction = auction;
-            auction.NewRound += startCountDown;
-            auction.NewBidAccepted += resetTimer;
-
             this.firstTimeout = firstTimeout;
             this.secondTimeout = secondTimeout;
             this.thirdTimeout = thirdTimeout;
+
+            auction.NewRound += startCountDown;
+            auction.NewBidAccepted += resetTimer;
 
             timer = new Timer();
             timer.Elapsed += timerSignal;
@@ -40,8 +38,8 @@ namespace Model
 
         private void startCountDown()
         {
+            // callNumber is used to determine if the Auctioneer should call First, Second or Third
             callNumber = 1;
-            // timer.stop?
 
             timer.Interval = firstTimeout;
             timer.Start();
@@ -73,13 +71,11 @@ namespace Model
             }
             else
             {
-                // evaluate whether sold or not
-                // might be easier to make the delegate send a string
-                bool IsSold = auction.IsCurrentItemSold();
+                bool isSold = auction.IsCurrentItemSold();
 
                 AuctionItem item = auction.CurrentItem;
 
-                if (IsSold)
+                if (isSold)
                 {
                     CallThird("Third! " + item.ItemName + " sold to " + item.HighestBidder + " for " + item.Bid + " HollarDollars!");
                 }

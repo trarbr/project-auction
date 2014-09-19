@@ -38,9 +38,6 @@ namespace Model
                 }
             }
         }
-
-        private string _highestBidder;
-
         public string HighestBidder
         {
             get
@@ -51,11 +48,11 @@ namespace Model
                 }
             }
         }
-        
 
         private int _id;
         private string _itemName;
         private decimal _bid;
+        private string _highestBidder;
 
         private bool sold;
         private decimal minimumSoldPrice;
@@ -63,8 +60,8 @@ namespace Model
         
         public AuctionItem(int id, string itemName, decimal minimumBid, decimal minimumSoldPrice)
         {
-            // No race conditions in the constructor, as the item has not yet been added to the 
-            // Auction, so no use of lock.
+            // No race conditions while constructing the item as the item has not yet been added to
+            // the Auction, so no use of lock.
             auctionItemLock = new object();
             _id = id;
             _itemName = itemName;
@@ -80,8 +77,8 @@ namespace Model
                 if (amount > _bid && sold == false)
                 {
                     _bid = amount;
-                    success = true;
                     _highestBidder = bidder;
+                    success = true;
                 }
                 else
                 {

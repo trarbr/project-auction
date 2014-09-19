@@ -19,69 +19,26 @@ namespace Services
         private IPlaceBidsController placeBidsController;
         private Socket commandSocket;
         private Socket eventSocket;
-
         private StreamReader commandReader;
         private StreamWriter commandWriter;
-
-        private StreamReader eventReader;
         private StreamWriter eventWriter;
         private NetworkStream eventStream;
-
         private object lockObj;
-        // constructor should also take a Socket, which it is passed from the server
+
         public PlaceBidsHandler(IPlaceBidsController placeBidsController, Socket commandSocket, object lockObj)
         {
             this.placeBidsController = placeBidsController;
             this.commandSocket = commandSocket;
 
+            // This lock is used to lock access to port 16001 so that different Handlers don't try
+            // to use it concurrently
             this.lockObj = lockObj;
-            // subscribe to events on controller
-            // when an event is fired on the controller, it has to send a new message to the
-            // client.
 
-            placeBidsController.NewRound += NewRound;
-            placeBidsController.NewBidAccepted += NewBidAccepted;
-            placeBidsController.CallFirst += First;
-            placeBidsController.CallSecond += Second;
-            placeBidsController.CallThird += Third;
-        }
-
-        // needs a while-true method that reads from the StreamReader
-        // then it needs an if-else or switch to evaluate which command to pass the string it just
-        // read to (e.g. if strings first word is "bid" it should call placeBid...
-        // this while-true method will be used by the server after instantiating the handler: 
-        // the while-true method is passed to a new thread and started.
-
-        private string getCurrentItem()
-        {
-            SAuctionItem item = placeBidsController.GetCurrentItem();
-
-            string itemAsString = JsonConvert.SerializeObject(item);
-
-            return itemAsString;
-        }
-
-        private bool placeBid(string itemAsString, string amountAsString, string bidder)
-        {
-            SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemAsString);
-            decimal amount = decimal.Parse(amountAsString);
-
-            return placeBidsController.PlaceBid(item, amount, bidder);
-        }
-
-        private void createEventSocket()
-        {
-            TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 16001);
-            listener.Start();
-            
-            eventSocket = listener.AcceptSocket();
-
-            eventStream = new NetworkStream(eventSocket);
-            eventReader = new StreamReader(eventStream);
-            eventWriter = new StreamWriter(eventStream);
-            eventWriter.AutoFlush = true;
-
-            listener.Stop();
+            placeBidsController.NewRound += newRound;
+            placeBidsController.NewBidAccepted += newBidAccepted;
+            placeBidsController.CallFirst += first;
+            placeBidsController.CallSecond += second;
+            placeBidsController.CallThird += third;
         }
 
         internal void Run()
@@ -144,33 +101,62 @@ namespace Services
             commandStream.Close();
             commandSocket.Close();
 
-            eventReader.Close();
             eventWriter.Close();
             eventStream.Close();
             eventSocket.Close();
         }
 
-        public void First(string message)
+        private void createEventSocket()
+        {
+            TcpListener listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 16001);
+            listener.Start();
+            
+            eventSocket = listener.AcceptSocket();
+
+            eventStream = new NetworkStream(eventSocket);
+            eventWriter = new StreamWriter(eventStream);
+            eventWriter.AutoFlush = true;
+
+            listener.Stop();
+        }
+
+        private string getCurrentItem()
+        {
+            SAuctionItem item = placeBidsController.GetCurrentItem();
+            string itemAsString = JsonConvert.SerializeObject(item);
+
+            return itemAsString;
+        }
+
+        private bool placeBid(string itemAsString, string amountAsString, string bidder)
+        {
+            SAuctionItem item = JsonConvert.DeserializeObject<SAuctionItem>(itemAsString);
+            decimal amount = decimal.Parse(amountAsString);
+
+            return placeBidsController.PlaceBid(item, amount, bidder);
+        }
+
+        private void first(string message)
         {
             eventWriter.WriteLine(message);
         }
 
-        private void Third(string message)
+        private void second(string message)
         {
             eventWriter.WriteLine(message);
         }
 
-        private void Second(string message)
+        private void third(string message)
         {
             eventWriter.WriteLine(message);
         }
 
-        private void NewBidAccepted()
+        private void newBidAccepted()
         {
             eventWriter.WriteLine("NewBidAccepted");
         }
 
-        private void NewRound()
+        private void newRound()
         {
             eventWriter.WriteLine("NewRound");
         }
