@@ -118,7 +118,7 @@ namespace AuctionGUI
             {
                 decimal amount;
                 decimal.TryParse(placeBidTextBox.Text, out amount);
-                bool success = placeBidsController.PlaceBid(auctionItem, amount, "adolf aahhhhhh");
+                bool success = placeBidsController.PlaceBid(auctionItem, amount, "Adolf");
                 if (success == true)
                 {
                     yourBidLabel.Content = amount + " (Accepted)";
